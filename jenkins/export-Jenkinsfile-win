@@ -56,30 +56,30 @@ pipeline {
       }
     }
 
-stage('Git Commit & Push') {
-  steps {
-    powershell '''
-      git config user.name  "$env:GIT_USER_NAME"
-      git config user.email "$env:GIT_USER_EMAIL"
+    stage('Git Commit & Push') {
+      steps {
+        powershell '''
+          git config user.name  "$env:GIT_USER_NAME"
+          git config user.email "$env:GIT_USER_EMAIL"
 
-      # pastikan kerja di branch main
-      git checkout main
-      git pull origin main
+          # pastikan kerja di branch main
+          git checkout main
+          git pull origin main
 
-      git status
+          git status
 
-      git add -A
+          git add -A
+ 
+          git commit -m "auto: export API $env:API_PROJECT"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "No changes to commit"
+            exit 0
+          }
 
-      git commit -m "auto: export API $env:API_PROJECT"
-      if ($LASTEXITCODE -ne 0) {
-        Write-Host "No changes to commit"
-        exit 0
+          git push origin main
+        '''
       }
-
-      git push origin main
-    '''
-  }
-}
+    }
 
   post {
     success {
