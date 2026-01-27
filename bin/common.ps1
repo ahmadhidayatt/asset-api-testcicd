@@ -11,6 +11,26 @@ $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ROOT_DIR   = Resolve-Path "$SCRIPT_DIR\.."
 
 ##############################################################################
+# Helper: Build Basic Auth Header
+##############################################################################
+function New-BasicAuthHeader {
+    param (
+        [Parameter(Mandatory)]
+        [string]$Username,
+
+        [Parameter(Mandatory)]
+        [string]$Password
+    )
+
+    $token = [Convert]::ToBase64String(
+        [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
+    )
+
+    return @{
+        Authorization = "Basic $token"
+    }
+}
+##############################################################################
 # Ping API Gateway Server
 ##############################################################################
 function Ping-ApigatewayServer {
