@@ -1,0 +1,121 @@
+{
+  "apiDefinition" : {
+    "wsdl" : "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<wsdl:definitions targetNamespace=\"http://ws.mii.com\" xmlns:apachesoap=\"http://xml.apache.org/xml-soap\" xmlns:impl=\"http://ws.mii.com\" xmlns:intf=\"http://ws.mii.com\" xmlns:tns1=\"http://model.ws.mii.com\" xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:wsdlsoap=\"http://schemas.xmlsoap.org/wsdl/soap/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n<!--WSDL created by Apache Axis version: 1.4\r\nBuilt on Apr 22, 2006 (06:55:48 PDT)-->\r\n <wsdl:types>\r\n  <schema elementFormDefault=\"qualified\" targetNamespace=\"http://ws.mii.com\" xmlns=\"http://www.w3.org/2001/XMLSchema\">\r\n   <import namespace=\"http://model.ws.mii.com\"/>\r\n   <element name=\"reflagging\">\r\n    <complexType>\r\n     <sequence>\r\n      <element name=\"dapen\" type=\"tns1:ReflaggingModel\"/>\r\n     </sequence>\r\n    </complexType>\r\n   </element>\r\n   <element name=\"reflaggingResponse\">\r\n    <complexType>\r\n     <sequence>\r\n      <element name=\"reflaggingReturn\" type=\"tns1:TransaksiModel\"/>\r\n     </sequence>\r\n    </complexType>\r\n   </element>\r\n  </schema>\r\n  <schema elementFormDefault=\"qualified\" targetNamespace=\"http://model.ws.mii.com\" xmlns=\"http://www.w3.org/2001/XMLSchema\">\r\n   <complexType name=\"ReflaggingModel\">\r\n    <sequence>\r\n     <element name=\"bankRekening\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"bulanBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"jumlahBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeJenisPenyaluran\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeJuruBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeStatusPembayaranPerubahan\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeStatusPeserta\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"noBukti\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"noRekening\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"nopens\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalPengambilan\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalRetur\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalSetor\" nillable=\"true\" type=\"xsd:string\"/>\r\n    </sequence>\r\n   </complexType>\r\n   <complexType name=\"TransaksiModel\">\r\n    <sequence>\r\n     <element name=\"responseCode\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"responseMessage\" nillable=\"true\" type=\"xsd:string\"/>\r\n    </sequence>\r\n   </complexType>\r\n  </schema>\r\n </wsdl:types>\r\n\r\n   <wsdl:message name=\"reflaggingResponse\">\r\n\r\n      <wsdl:part element=\"impl:reflaggingResponse\" name=\"parameters\">\r\n\r\n      </wsdl:part>\r\n\r\n   </wsdl:message>\r\n\r\n   <wsdl:message name=\"reflaggingRequest\">\r\n\r\n      <wsdl:part element=\"impl:reflagging\" name=\"parameters\">\r\n\r\n      </wsdl:part>\r\n\r\n   </wsdl:message>\r\n\r\n   <wsdl:portType name=\"ReflaggingWS\">\r\n\r\n      <wsdl:operation name=\"reflagging\">\r\n\r\n         <wsdl:input message=\"impl:reflaggingRequest\" name=\"reflaggingRequest\">\r\n\r\n       </wsdl:input>\r\n\r\n         <wsdl:output message=\"impl:reflaggingResponse\" name=\"reflaggingResponse\">\r\n\r\n       </wsdl:output>\r\n\r\n      </wsdl:operation>\r\n\r\n   </wsdl:portType>\r\n\r\n   <wsdl:binding name=\"ReflaggingWSSoapBinding\" type=\"impl:ReflaggingWS\">\r\n\r\n      <wsdlsoap:binding style=\"document\" transport=\"http://schemas.xmlsoap.org/soap/http\"/>\r\n\r\n      <wsdl:operation name=\"reflagging\">\r\n\r\n         <wsdlsoap:operation soapAction=\"\"/>\r\n\r\n         <wsdl:input name=\"reflaggingRequest\">\r\n\r\n            <wsdlsoap:body use=\"literal\"/>\r\n\r\n         </wsdl:input>\r\n\r\n         <wsdl:output name=\"reflaggingResponse\">\r\n\r\n            <wsdlsoap:body use=\"literal\"/>\r\n\r\n         </wsdl:output>\r\n\r\n      </wsdl:operation>\r\n\r\n   </wsdl:binding>\r\n\r\n   <wsdl:service name=\"ReflaggingWSService\">\r\n\r\n      <wsdl:port binding=\"impl:ReflaggingWSSoapBinding\" name=\"ReflaggingWS\">\r\n\r\n         <wsdlsoap:address location=\"http://localhost:8584/asabri-be/services/ReflaggingWS\"/>\r\n\r\n      </wsdl:port>\r\n\r\n   </wsdl:service>\r\n\r\n</wsdl:definitions>\r\n",
+    "baseWsdlUri" : "D:\\Opt\\APIM1015\\IntegrationServer\\instances\\default\\temp\\b0fa12ba-3256-4dc3-8001-ab541935eb21\\",
+    "nativeUri" : [ "http://localhost:8584/asabri-be/services/ReflaggingWS" ],
+    "serviceName" : "testRefleg",
+    "operationsInfo" : [ {
+      "name" : "reflagging",
+      "namespace" : "http://ws.mii.com",
+      "enabled" : true,
+      "bindings" : [ {
+        "name" : "ReflaggingWSSoapBinding",
+        "type" : "soap",
+        "specifier" : "",
+        "inputMessage" : "<ws:reflagging xmlns:ws=\"http://ws.mii.com\" xmlns:mod=\"http://model.ws.mii.com\">\r\n  <ws:dapen>\r\n    <mod:bankRekening>string</mod:bankRekening>\r\n    <mod:bulanBayar>string</mod:bulanBayar>\r\n    <mod:jumlahBayar>string</mod:jumlahBayar>\r\n    <mod:kodeJenisPenyaluran>string</mod:kodeJenisPenyaluran>\r\n    <mod:kodeJuruBayar>string</mod:kodeJuruBayar>\r\n    <mod:kodeStatusPembayaranPerubahan>string</mod:kodeStatusPembayaranPerubahan>\r\n    <mod:kodeStatusPeserta>string</mod:kodeStatusPeserta>\r\n    <mod:noBukti>string</mod:noBukti>\r\n    <mod:noRekening>string</mod:noRekening>\r\n    <mod:nopens>string</mod:nopens>\r\n    <mod:tanggalBayar>string</mod:tanggalBayar>\r\n    <mod:tanggalPengambilan>string</mod:tanggalPengambilan>\r\n    <mod:tanggalRetur>string</mod:tanggalRetur>\r\n    <mod:tanggalSetor>string</mod:tanggalSetor>\r\n  </ws:dapen>\r\n</ws:reflagging>",
+        "outputMessage" : "<ws:reflaggingResponse xmlns:ws=\"http://ws.mii.com\" xmlns:mod=\"http://model.ws.mii.com\">\r\n  <ws:reflaggingReturn>\r\n    <mod:responseCode>string</mod:responseCode>\r\n    <mod:responseMessage>string</mod:responseMessage>\r\n  </ws:reflaggingReturn>\r\n</ws:reflaggingResponse>"
+      } ],
+      "mockedResponses" : { },
+      "mockedConditionsBasedCustomResponsesList" : [ ],
+      "defined" : true,
+      "soapAction" : "",
+      "isRESTInvokeEnabled" : true,
+      "restEnabledPath" : {
+        "post" : {
+          "consumes" : [ "application/json", "application/xml" ],
+          "produces" : [ "application/json", "application/xml" ],
+          "responses" : {
+            "200" : {
+              "headersV3" : { },
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "type" : "gateway"
+                  },
+                  "examples" : { },
+                  "example" : "{\"reflaggingResponse\":{\"reflaggingReturn\":{\"responseCode\":\"string\",\"responseMessage\":\"string\"}}}"
+                },
+                "application/xml" : {
+                  "schema" : {
+                    "type" : "gateway"
+                  },
+                  "examples" : { },
+                  "example" : "<ws:reflaggingResponse xmlns:ws=\"http://ws.mii.com\" xmlns:mod=\"http://model.ws.mii.com\">\r\n  <ws:reflaggingReturn>\r\n    <mod:responseCode>string</mod:responseCode>\r\n    <mod:responseMessage>string</mod:responseMessage>\r\n  </ws:reflaggingReturn>\r\n</ws:reflaggingResponse>"
+                }
+              },
+              "links" : { },
+              "schema" : { },
+              "examples" : { },
+              "headers" : { }
+            }
+          },
+          "mockedResponses" : { },
+          "mockedConditionsBasedCustomResponsesList" : [ ],
+          "enabled" : true,
+          "requestBody" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "gateway"
+                },
+                "examples" : { },
+                "example" : "{\"reflagging\":{\"dapen\":{\"bankRekening\":\"string\",\"bulanBayar\":\"string\",\"jumlahBayar\":\"string\",\"kodeJenisPenyaluran\":\"string\",\"kodeJuruBayar\":\"string\",\"kodeStatusPembayaranPerubahan\":\"string\",\"kodeStatusPeserta\":\"string\",\"noBukti\":\"string\",\"noRekening\":\"string\",\"nopens\":\"string\",\"tanggalBayar\":\"string\",\"tanggalPengambilan\":\"string\",\"tanggalRetur\":\"string\",\"tanggalSetor\":\"string\"}}}"
+              },
+              "application/xml" : {
+                "schema" : {
+                  "type" : "gateway"
+                },
+                "examples" : { },
+                "example" : "<ws:reflagging xmlns:ws=\"http://ws.mii.com\" xmlns:mod=\"http://model.ws.mii.com\">\r\n  <ws:dapen>\r\n    <mod:bankRekening>string</mod:bankRekening>\r\n    <mod:bulanBayar>string</mod:bulanBayar>\r\n    <mod:jumlahBayar>string</mod:jumlahBayar>\r\n    <mod:kodeJenisPenyaluran>string</mod:kodeJenisPenyaluran>\r\n    <mod:kodeJuruBayar>string</mod:kodeJuruBayar>\r\n    <mod:kodeStatusPembayaranPerubahan>string</mod:kodeStatusPembayaranPerubahan>\r\n    <mod:kodeStatusPeserta>string</mod:kodeStatusPeserta>\r\n    <mod:noBukti>string</mod:noBukti>\r\n    <mod:noRekening>string</mod:noRekening>\r\n    <mod:nopens>string</mod:nopens>\r\n    <mod:tanggalBayar>string</mod:tanggalBayar>\r\n    <mod:tanggalPengambilan>string</mod:tanggalPengambilan>\r\n    <mod:tanggalRetur>string</mod:tanggalRetur>\r\n    <mod:tanggalSetor>string</mod:tanggalSetor>\r\n  </ws:dapen>\r\n</ws:reflagging>"
+              }
+            },
+            "name" : "requestBody"
+          }
+        },
+        "parameters" : [ ],
+        "enabled" : true,
+        "name" : "reflagging",
+        "invokePath" : "/reflagging"
+      },
+      "scopes" : [ ],
+      "tags" : [ ],
+      "headers" : [ ]
+    } ],
+    "type" : "soap",
+    "serviceRegistryDisplayName" : "testRefleg_1.1",
+    "operationPolicies" : {
+      "reflagging" : ""
+    },
+    "isRESTInvokeEnabled" : false,
+    "soapToRestConfigurations" : {
+      "useSchemaForTransformation" : true,
+      "removeRootElement" : false,
+      "useDefaultElements" : false
+    },
+    "differentBindings" : false
+  },
+  "nativeEndpoint" : [ {
+    "passSecurityHeaders" : true,
+    "uri" : "http://localhost:8584/asabri-be/services/ReflaggingWS",
+    "connectionTimeoutDuration" : 0,
+    "alias" : false
+  } ],
+  "apiName" : "testRefleg",
+  "apiVersion" : "1.1",
+  "maturityState" : "Beta",
+  "isActive" : true,
+  "type" : "SOAP",
+  "owner" : "Administrator",
+  "policies" : [ "248e2c36-0a02-4a70-a87b-956c79d93ad2" ],
+  "referencedFiles" : {
+    "ReflaggingWS.wsdl" : "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<wsdl:definitions targetNamespace=\"http://ws.mii.com\" xmlns:apachesoap=\"http://xml.apache.org/xml-soap\" xmlns:impl=\"http://ws.mii.com\" xmlns:intf=\"http://ws.mii.com\" xmlns:tns1=\"http://model.ws.mii.com\" xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns:wsdlsoap=\"http://schemas.xmlsoap.org/wsdl/soap/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n<!--WSDL created by Apache Axis version: 1.4\r\nBuilt on Apr 22, 2006 (06:55:48 PDT)-->\r\n <wsdl:types>\r\n  <schema elementFormDefault=\"qualified\" targetNamespace=\"http://ws.mii.com\" xmlns=\"http://www.w3.org/2001/XMLSchema\">\r\n   <import namespace=\"http://model.ws.mii.com\"/>\r\n   <element name=\"reflagging\">\r\n    <complexType>\r\n     <sequence>\r\n      <element name=\"dapen\" type=\"tns1:ReflaggingModel\"/>\r\n     </sequence>\r\n    </complexType>\r\n   </element>\r\n   <element name=\"reflaggingResponse\">\r\n    <complexType>\r\n     <sequence>\r\n      <element name=\"reflaggingReturn\" type=\"tns1:TransaksiModel\"/>\r\n     </sequence>\r\n    </complexType>\r\n   </element>\r\n  </schema>\r\n  <schema elementFormDefault=\"qualified\" targetNamespace=\"http://model.ws.mii.com\" xmlns=\"http://www.w3.org/2001/XMLSchema\">\r\n   <complexType name=\"ReflaggingModel\">\r\n    <sequence>\r\n     <element name=\"bankRekening\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"bulanBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"jumlahBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeJenisPenyaluran\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeJuruBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeStatusPembayaranPerubahan\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"kodeStatusPeserta\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"noBukti\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"noRekening\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"nopens\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalBayar\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalPengambilan\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalRetur\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"tanggalSetor\" nillable=\"true\" type=\"xsd:string\"/>\r\n    </sequence>\r\n   </complexType>\r\n   <complexType name=\"TransaksiModel\">\r\n    <sequence>\r\n     <element name=\"responseCode\" nillable=\"true\" type=\"xsd:string\"/>\r\n     <element name=\"responseMessage\" nillable=\"true\" type=\"xsd:string\"/>\r\n    </sequence>\r\n   </complexType>\r\n  </schema>\r\n </wsdl:types>\r\n\r\n   <wsdl:message name=\"reflaggingResponse\">\r\n\r\n      <wsdl:part element=\"impl:reflaggingResponse\" name=\"parameters\">\r\n\r\n      </wsdl:part>\r\n\r\n   </wsdl:message>\r\n\r\n   <wsdl:message name=\"reflaggingRequest\">\r\n\r\n      <wsdl:part element=\"impl:reflagging\" name=\"parameters\">\r\n\r\n      </wsdl:part>\r\n\r\n   </wsdl:message>\r\n\r\n   <wsdl:portType name=\"ReflaggingWS\">\r\n\r\n      <wsdl:operation name=\"reflagging\">\r\n\r\n         <wsdl:input message=\"impl:reflaggingRequest\" name=\"reflaggingRequest\">\r\n\r\n       </wsdl:input>\r\n\r\n         <wsdl:output message=\"impl:reflaggingResponse\" name=\"reflaggingResponse\">\r\n\r\n       </wsdl:output>\r\n\r\n      </wsdl:operation>\r\n\r\n   </wsdl:portType>\r\n\r\n   <wsdl:binding name=\"ReflaggingWSSoapBinding\" type=\"impl:ReflaggingWS\">\r\n\r\n      <wsdlsoap:binding style=\"document\" transport=\"http://schemas.xmlsoap.org/soap/http\"/>\r\n\r\n      <wsdl:operation name=\"reflagging\">\r\n\r\n         <wsdlsoap:operation soapAction=\"\"/>\r\n\r\n         <wsdl:input name=\"reflaggingRequest\">\r\n\r\n            <wsdlsoap:body use=\"literal\"/>\r\n\r\n         </wsdl:input>\r\n\r\n         <wsdl:output name=\"reflaggingResponse\">\r\n\r\n            <wsdlsoap:body use=\"literal\"/>\r\n\r\n         </wsdl:output>\r\n\r\n      </wsdl:operation>\r\n\r\n   </wsdl:binding>\r\n\r\n   <wsdl:service name=\"ReflaggingWSService\">\r\n\r\n      <wsdl:port binding=\"impl:ReflaggingWSSoapBinding\" name=\"ReflaggingWS\">\r\n\r\n         <wsdlsoap:address location=\"http://localhost:8584/asabri-be/services/ReflaggingWS\"/>\r\n\r\n      </wsdl:port>\r\n\r\n   </wsdl:service>\r\n\r\n</wsdl:definitions>\r\n"
+  },
+  "tracingEnabled" : false,
+  "scopes" : [ ],
+  "publishedPortals" : [ ],
+  "creationDate" : "2024-12-18 11:42:25 GMT",
+  "lastModified" : "2024-12-18 11:43:58 GMT",
+  "systemVersion" : 1,
+  "gatewayEndpoints" : { },
+  "id" : "d4fc6315-d844-4150-860d-62106878bd1b"
+}

@@ -1,0 +1,110 @@
+{
+  "apiDefinition" : {
+    "info" : {
+      "description" : "API for Training",
+      "version" : "1.0",
+      "title" : "Training"
+    },
+    "basePath" : "",
+    "serviceRegistryDisplayName" : "Training_1.0",
+    "schemes" : [ ],
+    "security" : [ ],
+    "paths" : {
+      "/basic/Summation" : {
+        "post" : {
+          "parameters" : [ ],
+          "responses" : {
+            "200" : {
+              "headersV3" : { },
+              "content" : {
+                "application/json" : {
+                  "schema" : {
+                    "$ref" : "#/components/schemas/SummationResponse"
+                  },
+                  "examples" : { }
+                }
+              },
+              "links" : { },
+              "schema" : { },
+              "examples" : { },
+              "headers" : { }
+            }
+          },
+          "mockedResponses" : { },
+          "mockedConditionsBasedCustomResponsesList" : [ ],
+          "enabled" : true,
+          "scopes" : [ ],
+          "requestBody" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SummationRequest"
+                },
+                "examples" : { }
+              }
+            },
+            "name" : "requestBody"
+          }
+        },
+        "parameters" : [ ],
+        "scopes" : [ ],
+        "displayName" : "Summation",
+        "description" : "Summation",
+        "enabled" : true
+      }
+    },
+    "securityDefinitions" : { },
+    "definitions" : { },
+    "parameters" : { },
+    "baseUriParameters" : [ ],
+    "externalDocs" : [ ],
+    "servers" : [ {
+      "url" : "http://localhost:5555",
+      "description" : "training native endpoint",
+      "variables" : { }
+    } ],
+    "components" : {
+      "schemas" : {
+        "SummationRequest" : {
+          "type" : "gateway",
+          "schema" : "{\n\"type\": \"object\",\n\"properties\": {\n\"num1\": {\n\"type\": \"string\",\n\"description\": \"Number 1\"\n},\n\"num2\": {\n\"type\": \"string\",\n\"description\": \"Number 2\"\n}\n}\n}"
+        },
+        "SummationResponse" : {
+          "type" : "gateway",
+          "schema" : "{\n\"type\": \"object\",\n\"properties\": {\n\"num1\": {\n\"type\": \"string\",\n\"description\": \"Number 1\"\n},\n\"num2\": {\n\"type\": \"string\",\n\"description\": \"Number 2\"\n},\n\"value\": {\n\"maxLength\": 16,\n\"type\": \"string\",\n\"description\": \"Short Name\"\n}\n}\n}"
+        }
+      },
+      "responses" : { },
+      "parameters" : { },
+      "examples" : { },
+      "requestBodies" : { },
+      "headers" : { },
+      "links" : { },
+      "callbacks" : { }
+    },
+    "type" : "rest"
+  },
+  "nativeEndpoint" : [ {
+    "passSecurityHeaders" : true,
+    "uri" : "http://localhost:5555",
+    "connectionTimeoutDuration" : 0,
+    "alias" : false
+  } ],
+  "apiName" : "Training",
+  "apiVersion" : "1.0",
+  "apiDescription" : "API for Training",
+  "maturityState" : "Beta",
+  "isActive" : true,
+  "type" : "REST",
+  "owner" : "Administrator",
+  "policies" : [ "d79da4dc-0bb5-4164-9614-34e9242258db" ],
+  "tracingEnabled" : false,
+  "scopes" : [ ],
+  "publishedPortals" : [ ],
+  "creationDate" : "2024-12-20 01:07:58 GMT",
+  "lastModified" : "2025-05-30 08:08:04 GMT",
+  "systemVersion" : 1,
+  "gatewayEndpoints" : { },
+  "deployments" : [ "APIGateway" ],
+  "id" : "a750bd26-77c2-449f-82ce-106de5f8f63c"
+}

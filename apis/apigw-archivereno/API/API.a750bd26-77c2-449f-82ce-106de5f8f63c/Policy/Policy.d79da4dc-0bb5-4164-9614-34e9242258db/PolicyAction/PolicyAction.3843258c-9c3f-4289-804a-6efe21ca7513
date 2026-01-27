@@ -1,0 +1,37 @@
+{
+  "id" : "3843258c-9c3f-4289-804a-6efe21ca7513",
+  "names" : [ {
+    "value" : "Monitor Performance",
+    "locale" : "en"
+  } ],
+  "templateKey" : "monitorServicePerformance",
+  "parameters" : [ {
+    "templateKey" : "destination",
+    "parameters" : [ {
+      "templateKey" : "destinationType",
+      "values" : [ "GATEWAY" ]
+    } ]
+  }, {
+    "templateKey" : "alertIntervalUnit",
+    "values" : [ "minutes" ]
+  }, {
+    "templateKey" : "alertFrequency",
+    "values" : [ "always" ]
+  }, {
+    "templateKey" : "alertMessage",
+    "values" : [ "TEST" ]
+  }, {
+    "templateKey" : "monitorRules",
+    "parameters" : [ {
+      "templateKey" : "monitorRuleName",
+      "values" : [ "successCount" ]
+    }, {
+      "templateKey" : "monitorRuleOperator",
+      "values" : [ "LT" ]
+    }, {
+      "templateKey" : "value",
+      "values" : [ "1" ]
+    } ]
+  } ],
+  "active" : false
+}

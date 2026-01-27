@@ -1,0 +1,19 @@
+{
+  "id" : "c6270de2-50ba-4051-8fd2-995312b0231a",
+  "names" : [ {
+    "value" : "Straight Through Routing",
+    "locale" : "en"
+  } ],
+  "templateKey" : "straightThroughRouting",
+  "parameters" : [ {
+    "templateKey" : "endpointUri",
+    "values" : [ "http://localhost:8584/asabri-be/services/ReflaggingWS" ]
+  }, {
+    "templateKey" : "soapOptimize",
+    "values" : [ "None" ]
+  }, {
+    "templateKey" : "passSecurityHeaders",
+    "values" : [ "false" ]
+  } ],
+  "active" : false
+}

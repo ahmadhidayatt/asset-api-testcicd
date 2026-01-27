@@ -1,0 +1,40 @@
+{
+  "id" : "6ec28d56-564e-41f0-9064-49b580bcdde7",
+  "names" : [ {
+    "value" : "Log Invocation",
+    "locale" : "en"
+  } ],
+  "templateKey" : "logInvocation",
+  "parameters" : [ {
+    "templateKey" : "storeRequestHeaders",
+    "values" : [ "true" ]
+  }, {
+    "templateKey" : "storeRequestPayload",
+    "values" : [ "true" ]
+  }, {
+    "templateKey" : "storeResponseHeaders",
+    "values" : [ "false" ]
+  }, {
+    "templateKey" : "storeResponsePayload",
+    "values" : [ "false" ]
+  }, {
+    "templateKey" : "storeAsZip",
+    "values" : [ "false" ]
+  }, {
+    "templateKey" : "logGenerationFrequency",
+    "values" : [ "Always" ]
+  }, {
+    "templateKey" : "destination",
+    "parameters" : [ {
+      "templateKey" : "destinationType",
+      "values" : [ "GATEWAY" ]
+    } ]
+  }, {
+    "templateKey" : "destination",
+    "parameters" : [ {
+      "templateKey" : "destinationType",
+      "values" : [ "DES" ]
+    } ]
+  } ],
+  "active" : false
+}

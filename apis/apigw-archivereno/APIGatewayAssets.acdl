@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<asset_composite name="APIGatewayAssets" displayName="Assets for API Gateway" runtimeVersion="10.15" targetNamespace="http://namespaces.softwareag.com/webMethods/APIGateway" xmlns="http://namespaces.softwareag.com/acdl/1.0" xmlns:EDA="http://namespaces.softwareag.com/webMethods/EDA" xmlns:MWS="http://namespaces.softwareag.com/webMethods/MWS" xmlns:IS="http://namespaces.softwareag.com/webMethods/IS" xmlns:APIPORTAL="http://namespaces.softwareag.com/webMethods/APIPORTAL" xmlns:AgileApps="http://namespaces.softwareag.com/webMethods/AgileApps" xmlns:BROKER="http://namespaces.softwareag.com/webMethods/BROKER" xmlns:implDetails="http://namespaces.softwareag.com/acdl/implDetails" xmlns:UniversalMessaging="http://namespaces.softwareag.com/webMethods/UniversalMessaging" xmlns:TN="http://namespaces.softwareag.com/webMethods/TN" xmlns:RULES="http://namespaces.softwareag.com/webMethods/RULES" xmlns:BPM="http://namespaces.softwareag.com/webMethods/BPM" xmlns:Optimize="http://namespaces.softwareag.com/webMethods/Optimize">
+    <buildInfo name="BuildTimestamp" value="2025-06-20T22:29:45"/>
+    <asset name="API.a750bd26-77c2-449f-82ce-106de5f8f63c" displayName="Training[1.0]" isDeployable="true">
+        <implementation.generic type="API"/>
+        <dependsOn>APIGateway:Policy.d79da4dc-0bb5-4164-9614-34e9242258db</dependsOn>
+        <dependsOn>APIGateway:RegisteredApplication.EmptyRegisteredApplication</dependsOn>
+    </asset>
+    <asset name="Policy.d79da4dc-0bb5-4164-9614-34e9242258db" displayName="Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="Policy"/>
+        <dependsOn>APIGateway:PolicyAction.3843258c-9c3f-4289-804a-6efe21ca7513</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.6ec28d56-564e-41f0-9064-49b580bcdde7</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.a7f9eab4-c948-4ef0-bb00-ad3126a1a540</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.a8c1ac5c-1d92-458b-ba4f-8b2c60a021cd</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.d62b946c-cb60-4282-b865-1fdd666cea98</dependsOn>
+    </asset>
+    <asset name="PolicyAction.a7f9eab4-c948-4ef0-bb00-ad3126a1a540" displayName="Policy Action [Straight Through Routing] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.a8c1ac5c-1d92-458b-ba4f-8b2c60a021cd" displayName="Policy Action [Outbound Auth - Transport] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+        <dependsOn>APIGateway:PassmanData.a8c1ac5c-1d92-458b-ba4f-8b2c60a021cdpassword</dependsOn>
+    </asset>
+    <asset name="PassmanData.a8c1ac5c-1d92-458b-ba4f-8b2c60a021cdpassword" displayName="a8c1ac5c-1d92-458b-ba4f-8b2c60a021cdpassword" isDeployable="true">
+        <implementation.generic type="PassmanData"/>
+    </asset>
+    <asset name="PolicyAction.3843258c-9c3f-4289-804a-6efe21ca7513" displayName="Policy Action [Monitor Performance] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.6ec28d56-564e-41f0-9064-49b580bcdde7" displayName="Policy Action [Log Invocation] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.d62b946c-cb60-4282-b865-1fdd666cea98" displayName="Policy Action [Enable HTTP / HTTPS] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="RegisteredApplication.EmptyRegisteredApplication" displayName="RegisteredApplication [ EmptyRegisteredApplication ]" isDeployable="true">
+        <implementation.generic type="RegisteredApplication"/>
+    </asset>
+    <asset name="API.d4fc6315-d844-4150-860d-62106878bd1b" displayName="testRefleg[1.1]" isDeployable="true">
+        <implementation.generic type="API"/>
+        <dependsOn>APIGateway:Policy.248e2c36-0a02-4a70-a87b-956c79d93ad2</dependsOn>
+        <dependsOn>APIGateway:RegisteredApplication.EmptyRegisteredApplication</dependsOn>
+    </asset>
+    <asset name="Policy.248e2c36-0a02-4a70-a87b-956c79d93ad2" displayName="Policy For API testRefleg[1.1]" isDeployable="true">
+        <implementation.generic type="Policy"/>
+        <dependsOn>APIGateway:PolicyAction.c6270de2-50ba-4051-8fd2-995312b0231a</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.cc9931b4-33b5-478a-93bf-723c297675cd</dependsOn>
+    </asset>
+    <asset name="PolicyAction.c6270de2-50ba-4051-8fd2-995312b0231a" displayName="Policy Action [Straight Through Routing] -&gt; Policy For API testRefleg[1.1]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.cc9931b4-33b5-478a-93bf-723c297675cd" displayName="Policy Action [Enable HTTP / HTTPS] -&gt; Policy For API testRefleg[1.1]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+</asset_composite>
