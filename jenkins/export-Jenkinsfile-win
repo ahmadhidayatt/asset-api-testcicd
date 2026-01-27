@@ -74,7 +74,41 @@ pipeline {
             exit 0
           }
 
-          git push origin main 2>&1 | Write-Host
+          stage('Git Commit & Push') {
+  steps {
+    withCredentials([
+      usernamePassword(
+        credentialsId: 'github-creds',
+        usernameVariable: 'GIT_USER',
+        passwordVariable: 'GIT_PASS'
+      )
+    ]) {
+      powershell '''
+        $ErrorActionPreference = "Stop"
+
+        git config user.name  "$env:GIT_USER_NAME"
+        git config user.email "$env:GIT_USER_EMAIL"
+
+        git checkout -B main origin/main
+        git pull origin main
+
+        git add -A
+
+        try {
+          git commit -m "auto: export API $env:API_PROJECT"
+        } catch {
+          Write-Host "No changes to commit"
+        }
+
+        # 🔥 AUTH NON-INTERACTIVE
+        git push https://comp.ahmadhidayat@gmail.com:Sparatiz322013!!!@github.com/ahmadhidayatt/asset-api-testcicd.git main
+
+        exit 0
+      '''
+    }
+  }
+}
+
           exit 0
         '''
       }
