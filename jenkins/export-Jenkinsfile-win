@@ -66,8 +66,7 @@ pipeline {
 
           git add -A
 
-          git commit -m "auto: export API $env:API_PROJECT" `
-            || echo "No changes to commit"
+          git commit -m "auto: export API $env:API_PROJECT" 
           if ($LASTEXITCODE -ne 0) {
                   Write-Host "No changes to commit"
                 }
