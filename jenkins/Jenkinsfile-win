@@ -43,7 +43,7 @@ pipeline {
           Write-Host "COMMON_LIB_LOCATION=$env:COMMON_LIB_LOCATION"
           Get-ChildItem $env:COMMON_LIB_LOCATION
 
-          . "$env:COMMON_LIB_LOCATION\\common.lib"
+          . "$env:COMMON_LIB_LOCATION\\common.ps1"
 
           Import-Api `
             -ApiProject $env:API_PROJECT `
