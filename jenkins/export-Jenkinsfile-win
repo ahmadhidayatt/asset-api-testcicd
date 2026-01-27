@@ -74,7 +74,7 @@ pipeline {
             exit 0
           }
 
-          git push origin main
+          git push origin main 2>&1 | Write-Host
           exit 0
         '''
       }
