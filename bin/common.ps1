@@ -1,6 +1,6 @@
 ##############################################################################
 # common.ps1
-# PowerShell port of common.lib for Jenkins Windows
+# PowerShell port of common.lib for Jenkins Windows (FIXED)
 ##############################################################################
 
 Set-StrictMode -Version Latest
@@ -12,7 +12,6 @@ $ROOT_DIR   = Resolve-Path "$SCRIPT_DIR\.."
 
 ##############################################################################
 # Ping API Gateway Server
-# Usage: Ping-ApigatewayServer <SERVER_URL> <PAUSE> <ITERATIONS>
 ##############################################################################
 function Ping-ApigatewayServer {
     param (
@@ -21,13 +20,14 @@ function Ping-ApigatewayServer {
         [int]$Iterations
     )
 
-    $healthUrl = "$Server/rest/apigateway/health"
+    $BaseUrl   = $Server.TrimEnd('/')
+    $HealthUri = "$BaseUrl/rest/apigateway/health"
 
     while ($true) {
         if ($Iterations -eq 0) { return 0 }
 
         try {
-            Invoke-WebRequest -Uri $healthUrl -UseBasicParsing | Out-Null
+            Invoke-WebRequest -Uri ([System.Uri]$HealthUri) -UseBasicParsing | Out-Null
             return 1
         } catch {
             Write-Host "$Server is down"
@@ -39,7 +39,6 @@ function Ping-ApigatewayServer {
 
 ##############################################################################
 # Import API
-# Usage: Import-Api <api_project> <url> <username> <password>
 ##############################################################################
 function Import-Api {
     param (
@@ -49,39 +48,58 @@ function Import-Api {
         [string]$Password
     )
 
-    $apiDir = Join-Path $ROOT_DIR "apis\$ApiProject"
-    $zipFile = Join-Path $ROOT_DIR "$ApiProject.zip"
-
-    if (!(Test-Path $apiDir)) {
-        throw "API folder not found: $apiDir"
+    if ([string]::IsNullOrWhiteSpace($Url)) {
+        throw "APIGATEWAY_URL is empty"
     }
 
-    if (Test-Path $zipFile) { Remove-Item $zipFile -Force }
+    $ApiDir  = Join-Path $ROOT_DIR "apis\$ApiProject"
+    $ZipFile = Join-Path $ROOT_DIR "$ApiProject.zip"
 
-    Compress-Archive -Path "$apiDir\*" -DestinationPath $zipFile
+    if (!(Test-Path $ApiDir)) {
+        throw "API folder not found: $ApiDir"
+    }
 
-    $bytes = [System.IO.File]::ReadAllBytes($zipFile)
-    $auth  = [Convert]::ToBase64String(
+    if (Test-Path $ZipFile) {
+        Remove-Item $ZipFile -Force
+    }
+
+    Compress-Archive -Path "$ApiDir\*" -DestinationPath $ZipFile -Force
+
+    $Bytes = [System.IO.File]::ReadAllBytes($ZipFile)
+    $Auth  = [Convert]::ToBase64String(
         [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
     )
 
+    # ===== BUILD URI SAFELY (THIS FIXES YOUR ERROR) =====
+    $BaseUrl    = $Url.Trim()
+    $BaseUrl    = $BaseUrl.TrimEnd('/')
+    $RequestUri = "$BaseUrl/rest/apigateway/archive?overwrite=*"
+
+    Write-Host "DEBUG RequestUri=[$RequestUri]"
+
+    try {
+        $ParsedUri = [System.Uri]$RequestUri
+    } catch {
+        throw "INVALID URI GENERATED: [$RequestUri]"
+    }
+    # ===================================================
+
     Invoke-RestMethod `
-        -Uri "$Url/rest/apigateway/archive?overwrite=*" `
+        -Uri $ParsedUri `
         -Method Post `
         -Headers @{
-            Authorization = "Basic $auth"
-            Accept = "application/json"
+            Authorization = "Basic $Auth"
+            Accept        = "application/json"
         } `
         -ContentType "application/zip" `
-        -Body $bytes | Out-Null
+        -Body $Bytes | Out-Null
 
-    Remove-Item $zipFile -Force
+    Remove-Item $ZipFile -Force
     Write-Host "Import API OK: $ApiProject"
 }
 
 ##############################################################################
 # Export API
-# Usage: Export-Api <api_project> <url> <username> <password>
 ##############################################################################
 function Export-Api {
     param (
@@ -91,30 +109,33 @@ function Export-Api {
         [string]$Password
     )
 
-    $apiDir = Join-Path $ROOT_DIR "apis\$ApiProject"
-    $zipFile = Join-Path $ROOT_DIR "$ApiProject.zip"
+    $ApiDir  = Join-Path $ROOT_DIR "apis\$ApiProject"
+    $ZipFile = Join-Path $ROOT_DIR "$ApiProject.zip"
 
-    if (!(Test-Path $apiDir)) {
-        throw "API directory not found: $apiDir"
+    if (!(Test-Path $ApiDir)) {
+        throw "API directory not found: $ApiDir"
     }
 
-    $auth = [Convert]::ToBase64String(
+    $Auth = [Convert]::ToBase64String(
         [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
     )
 
+    $BaseUrl    = $Url.Trim().TrimEnd('/')
+    $RequestUri = "$BaseUrl/rest/apigateway/archive"
+
     Invoke-WebRequest `
-        -Uri "$Url/rest/apigateway/archive" `
+        -Uri ([System.Uri]$RequestUri) `
         -Method Post `
         -Headers @{
-            Authorization = "Basic $auth"
-            "x-HTTP-Method-Override" = "GET"
+            Authorization             = "Basic $Auth"
+            "x-HTTP-Method-Override"  = "GET"
         } `
         -ContentType "application/json" `
-        -InFile "$apiDir\export_payload.json" `
-        -OutFile $zipFile
+        -InFile "$ApiDir\export_payload.json" `
+        -OutFile $ZipFile
 
-    Expand-Archive -Path $zipFile -DestinationPath $apiDir -Force
-    Remove-Item $zipFile -Force
+    Expand-Archive -Path $ZipFile -DestinationPath $ApiDir -Force
+    Remove-Item $ZipFile -Force
 
     Write-Host "Export API OK: $ApiProject"
 }
@@ -130,30 +151,33 @@ function Import-Configurations {
         [string]$Password
     )
 
-    $confDir = Join-Path (Get-Location) $ConfigName
-    if (!(Test-Path $confDir)) {
+    $ConfDir = Join-Path (Get-Location) $ConfigName
+    if (!(Test-Path $ConfDir)) {
         throw "Configuration not found: $ConfigName"
     }
 
-    $zipFile = Join-Path $confDir "config.zip"
-    Compress-Archive -Path "$confDir\*" -DestinationPath $zipFile -Force
+    $ZipFile = Join-Path $ConfDir "config.zip"
+    Compress-Archive -Path "$ConfDir\*" -DestinationPath $ZipFile -Force
 
-    $auth  = [Convert]::ToBase64String(
+    $Auth  = [Convert]::ToBase64String(
         [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
     )
-    $bytes = [System.IO.File]::ReadAllBytes($zipFile)
+    $Bytes = [System.IO.File]::ReadAllBytes($ZipFile)
+
+    $BaseUrl    = $Url.Trim().TrimEnd('/')
+    $RequestUri = "$BaseUrl/rest/apigateway/archive?overwrite=*"
 
     Invoke-RestMethod `
-        -Uri "$Url/rest/apigateway/archive?overwrite=*" `
+        -Uri ([System.Uri]$RequestUri) `
         -Method Post `
         -Headers @{
-            Authorization = "Basic $auth"
-            Accept = "application/json"
+            Authorization = "Basic $Auth"
+            Accept        = "application/json"
         } `
         -ContentType "application/zip" `
-        -Body $bytes | Out-Null
+        -Body $Bytes | Out-Null
 
-    Remove-Item $zipFile -Force
+    Remove-Item $ZipFile -Force
     Write-Host "Import configuration OK: $ConfigName"
 }
 
