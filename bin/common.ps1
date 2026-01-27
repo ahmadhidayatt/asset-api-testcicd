@@ -206,7 +206,13 @@ function Import-Configurations {
 ##############################################################################
 function Split-String {
     param (
+        [Parameter(Mandatory)]
         [string]$Input,
+
+        [Parameter(Mandatory)]
         [string]$Delimiter
     )
-    return $Input -split
+
+    return $Input.Split($Delimiter)
+}
+
