@@ -21,16 +21,16 @@ pipeline {
         script {
           def props = readProperties file: 'jenkins/jenkins.properties'
 
-          env.API_PROJECT          = props['api_project']?.trim()
-          env.APIGATEWAY_URL       = props['apigateway_url']?.trim()
-          env.APIGATEWAY_USERNAME  = props['apigateway_username']?.trim()
-          env.APIGATEWAY_PASSWORD  = props['apigateway_password']?.trim()
+          env.API_PROJECT         = props['api_project']?.trim()
+          env.APIGATEWAY_URL      = props['apigateway_url']?.trim()
+          env.APIGATEWAY_USERNAME = props['apigateway_username']?.trim()
+          env.APIGATEWAY_PASSWORD = props['apigateway_password']?.trim()
 
-          env.GIT_USER_NAME        = props['git_user_name']?.trim()
-          env.GIT_USER_EMAIL       = props['git_user_email']?.trim()
+          env.GIT_USER_NAME  = props['git_user_name']?.trim()
+          env.GIT_USER_EMAIL = props['git_user_email']?.trim()
 
-          env.COMMON_LIB_LOCATION  = "${env.WORKSPACE}\\bin"
-          env.API_DIR              = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
+          env.COMMON_LIB_LOCATION = "${env.WORKSPACE}\\bin"
+          env.API_DIR             = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
 
           echo "API_PROJECT=${env.API_PROJECT}"
           echo "APIGATEWAY_URL=${env.APIGATEWAY_URL}"
@@ -62,14 +62,12 @@ pipeline {
           git config user.name  "$env:GIT_USER_NAME"
           git config user.email "$env:GIT_USER_EMAIL"
 
-          # pastikan kerja di branch main
           git checkout main
           git pull origin main
 
           git status
-
           git add -A
- 
+
           git commit -m "auto: export API $env:API_PROJECT"
           if ($LASTEXITCODE -ne 0) {
             Write-Host "No changes to commit"
@@ -81,6 +79,8 @@ pipeline {
       }
     }
 
+  }   // ✅ stages CLOSE DI SINI
+
   post {
     success {
       echo "EXPORT PIPELINE SUCCESS ✅"
@@ -89,4 +89,5 @@ pipeline {
       echo "EXPORT PIPELINE FAILED ❌"
     }
   }
-}
+
+}   // ✅ pipeline CLOSE
