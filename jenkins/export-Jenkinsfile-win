@@ -73,7 +73,7 @@ pipeline {
               Write-Host "No changes to commit"
             }
 
-            git push https://comp.ahmadhidayat@gmail.com:Sparatiz322013!!!@github.com/ahmadhidayatt/asset-api-testcicd.git main
+            git push https://ahmadhidayatt:Sparatiz322013!!!@github.com/ahmadhidayatt/asset-api-testcicd.git main
 
             exit 0
           '''
