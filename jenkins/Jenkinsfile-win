@@ -1,0 +1,57 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    timeout(time: 60, unit: 'MINUTES')
+    disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '30'))
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Load Properties') {
+      steps {
+        script {
+          def props = readProperties file: 'jenkins/jenkins.properties'
+
+          env.API_PROJECT         = props['api_project'] ?: ''
+          env.APIGATEWAY_URL      = props['apigateway_url'] ?: ''
+          env.APIGATEWAY_USERNAME = props['apigateway_username'] ?: ''
+          env.APIGATEWAY_PASSWORD = props['apigateway_password'] ?: ''
+          env.COMMON_LIB_LOCATION = "${env.WORKSPACE}\\bin"
+          env.API_DIR             = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
+
+          echo "API_PROJECT=${env.API_PROJECT}"
+          echo "API_DIR=${env.API_DIR}"
+        }
+      }
+    }
+
+    stage('BuildAndDeploy') {
+      steps {
+        powershell '''
+          Write-Host "API_DIR=$env:API_DIR"
+          Get-ChildItem $env:API_DIR
+
+          Write-Host "COMMON_LIB_LOCATION=$env:COMMON_LIB_LOCATION"
+          Get-ChildItem $env:COMMON_LIB_LOCATION
+
+          . "$env:COMMON_LIB_LOCATION\\common.ps1"
+
+          Import-Api `
+            -ApiProject $env:API_PROJECT `
+            -GatewayUrl $env:APIGATEWAY_URL `
+            -Username $env:APIGATEWAY_USERNAME `
+            -Password $env:APIGATEWAY_PASSWORD
+        '''
+      }
+    }
+  }
+}
