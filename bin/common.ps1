@@ -216,3 +216,7 @@ function Split-String {
     return $Input.Split($Delimiter)
 }
 
+
+if (-not (Test-Path variable:LASTEXITCODE)) {
+    $global:LASTEXITCODE = 0
+}
