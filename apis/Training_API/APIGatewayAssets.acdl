@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<asset_composite name="APIGatewayAssets" displayName="Assets for API Gateway" runtimeVersion="10.15" targetNamespace="http://namespaces.softwareag.com/webMethods/APIGateway" xmlns="http://namespaces.softwareag.com/acdl/1.0" xmlns:EDA="http://namespaces.softwareag.com/webMethods/EDA" xmlns:MWS="http://namespaces.softwareag.com/webMethods/MWS" xmlns:IS="http://namespaces.softwareag.com/webMethods/IS" xmlns:APIPORTAL="http://namespaces.softwareag.com/webMethods/APIPORTAL" xmlns:AgileApps="http://namespaces.softwareag.com/webMethods/AgileApps" xmlns:BROKER="http://namespaces.softwareag.com/webMethods/BROKER" xmlns:implDetails="http://namespaces.softwareag.com/acdl/implDetails" xmlns:UniversalMessaging="http://namespaces.softwareag.com/webMethods/UniversalMessaging" xmlns:TN="http://namespaces.softwareag.com/webMethods/TN" xmlns:RULES="http://namespaces.softwareag.com/webMethods/RULES" xmlns:BPM="http://namespaces.softwareag.com/webMethods/BPM" xmlns:Optimize="http://namespaces.softwareag.com/webMethods/Optimize">
+    <buildInfo name="BuildTimestamp" value="2024-12-30T09:40:34"/>
+    <asset name="API.62607481-9425-40a1-b77f-947a89fe6d5a" displayName="Training00[1.0]" isDeployable="true">
+        <implementation.generic type="API"/>
+        <dependsOn>APIGateway:Policy.717106db-a691-4a10-858b-ca3e40d452ab</dependsOn>
+    </asset>
+    <asset name="Policy.717106db-a691-4a10-858b-ca3e40d452ab" displayName="Policy For API Training00[1.0]" isDeployable="true">
+        <implementation.generic type="Policy"/>
+        <dependsOn>APIGateway:PolicyAction.1337aded-37bd-4ee2-9895-dd45a3032488</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.1f945c47-ad55-46d4-ad8f-0f359ceea10e</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.72a7adb3-6476-4720-9ebc-eea9ec03581f</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.761b0330-43ac-4240-b17c-b1b743e47dd2</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.86841b1d-3305-4268-8906-04d1dd7175d1</dependsOn>
+    </asset>
+    <asset name="PolicyAction.86841b1d-3305-4268-8906-04d1dd7175d1" displayName="Policy Action [Straight Through Routing] -&gt; Policy For API Training00[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.1f945c47-ad55-46d4-ad8f-0f359ceea10e" displayName="Policy Action [Outbound Auth - Transport] -&gt; Policy For API Training00[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+        <dependsOn>APIGateway:PassmanData.1f945c47-ad55-46d4-ad8f-0f359ceea10epassword</dependsOn>
+    </asset>
+    <asset name="PassmanData.1f945c47-ad55-46d4-ad8f-0f359ceea10epassword" displayName="1f945c47-ad55-46d4-ad8f-0f359ceea10epassword" isDeployable="true">
+        <implementation.generic type="PassmanData"/>
+    </asset>
+    <asset name="PolicyAction.761b0330-43ac-4240-b17c-b1b743e47dd2" displayName="Policy Action [Conditional Error Processing] -&gt; Policy For API Training00[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.72a7adb3-6476-4720-9ebc-eea9ec03581f" displayName="Policy Action [Enable HTTP / HTTPS] -&gt; Policy For API Training00[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.1337aded-37bd-4ee2-9895-dd45a3032488" displayName="Policy Action [Response Transformation] -&gt; Policy For API Training00[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="API.38902b9d-014a-405d-b509-80a5c5b1d5eb" displayName="Training[1.0]" isDeployable="true">
+        <implementation.generic type="API"/>
+        <dependsOn>APIGateway:Policy.5045bd26-d1e5-4582-8fda-37bdb060976f</dependsOn>
+    </asset>
+    <asset name="Policy.5045bd26-d1e5-4582-8fda-37bdb060976f" displayName="Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="Policy"/>
+        <dependsOn>APIGateway:PolicyAction.11be2392-4fab-49a8-bf4b-2287992df662</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.153ba10d-7fe6-4fef-b383-8a643bde083f</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.239a4b49-06f2-4e98-8c81-b562741b8282</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.4a328b69-f9f3-4360-b6c1-53cf0ed1b394</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.ce670b26-c194-4ac6-a6b3-5f0de74851a4</dependsOn>
+    </asset>
+    <asset name="PolicyAction.ce670b26-c194-4ac6-a6b3-5f0de74851a4" displayName="Policy Action [Straight Through Routing] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.239a4b49-06f2-4e98-8c81-b562741b8282" displayName="Policy Action [Outbound Auth - Transport] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+        <dependsOn>APIGateway:PassmanData.239a4b49-06f2-4e98-8c81-b562741b8282password</dependsOn>
+    </asset>
+    <asset name="PassmanData.239a4b49-06f2-4e98-8c81-b562741b8282password" displayName="239a4b49-06f2-4e98-8c81-b562741b8282password" isDeployable="true">
+        <implementation.generic type="PassmanData"/>
+    </asset>
+    <asset name="PolicyAction.4a328b69-f9f3-4360-b6c1-53cf0ed1b394" displayName="Policy Action [Traffic Optimization] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.153ba10d-7fe6-4fef-b383-8a643bde083f" displayName="Policy Action [Identify &amp; Authorize] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.11be2392-4fab-49a8-bf4b-2287992df662" displayName="Policy Action [Enable HTTP / HTTPS] -&gt; Policy For API Training[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+</asset_composite>

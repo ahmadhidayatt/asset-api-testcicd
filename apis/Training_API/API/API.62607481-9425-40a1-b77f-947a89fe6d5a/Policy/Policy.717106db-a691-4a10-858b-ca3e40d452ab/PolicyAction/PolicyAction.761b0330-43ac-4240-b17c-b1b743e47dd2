@@ -1,0 +1,49 @@
+{
+  "id" : "761b0330-43ac-4240-b17c-b1b743e47dd2",
+  "names" : [ {
+    "value" : "Conditional Error Processing",
+    "locale" : "en"
+  } ],
+  "templateKey" : "conditionalErrorProcessing",
+  "parameters" : [ {
+    "templateKey" : "transformationConditions",
+    "parameters" : [ {
+      "templateKey" : "logicalConnector",
+      "values" : [ "OR" ]
+    }, {
+      "templateKey" : "transformationCondition",
+      "parameters" : [ {
+        "templateKey" : "transformationVariable",
+        "values" : [ "${response.statusCode}" ]
+      }, {
+        "templateKey" : "transformationConditionOperator",
+        "values" : [ "equals" ]
+      }, {
+        "templateKey" : "transformationConditionValue",
+        "values" : [ "401" ]
+      } ]
+    } ]
+  }, {
+    "templateKey" : "errorTransformationConfiguration",
+    "parameters" : [ {
+      "templateKey" : "customFailureMessages",
+      "parameters" : [ {
+        "templateKey" : "sendNativeProviderFault",
+        "values" : [ "false" ]
+      }, {
+        "templateKey" : "failureMessage",
+        "parameters" : [ {
+          "templateKey" : "contentType",
+          "values" : [ "json" ]
+        }, {
+          "templateKey" : "errortemplate",
+          "values" : [ "{\r\n    \"responseMessage\": \"akses tidak diijinkan\"\r\n}" ]
+        }, {
+          "templateKey" : "useAsDefault",
+          "values" : [ "true" ]
+        } ]
+      } ]
+    } ]
+  } ],
+  "active" : false
+}

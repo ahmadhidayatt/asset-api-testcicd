@@ -1,0 +1,46 @@
+{
+  "id" : "5045bd26-d1e5-4582-8fda-37bdb060976f",
+  "names" : [ {
+    "value" : "Default Policy for API Training",
+    "locale" : "English"
+  } ],
+  "descriptions" : [ {
+    "value" : "",
+    "locale" : "English"
+  } ],
+  "scope" : {
+    "scopeConditions" : [ ]
+  },
+  "policyEnforcements" : [ {
+    "enforcements" : [ {
+      "enforcementObjectId" : "ce670b26-c194-4ac6-a6b3-5f0de74851a4",
+      "order" : "0"
+    }, {
+      "enforcementObjectId" : "239a4b49-06f2-4e98-8c81-b562741b8282",
+      "order" : "1"
+    } ],
+    "stageKey" : "routing"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "4a328b69-f9f3-4360-b6c1-53cf0ed1b394",
+      "order" : "0"
+    } ],
+    "stageKey" : "LMT"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "153ba10d-7fe6-4fef-b383-8a643bde083f",
+      "order" : "0"
+    } ],
+    "stageKey" : "IAM"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "11be2392-4fab-49a8-bf4b-2287992df662",
+      "order" : "0"
+    } ],
+    "stageKey" : "transport"
+  } ],
+  "policyScope" : "SERVICE",
+  "global" : false,
+  "active" : false,
+  "systemPolicy" : false
+}

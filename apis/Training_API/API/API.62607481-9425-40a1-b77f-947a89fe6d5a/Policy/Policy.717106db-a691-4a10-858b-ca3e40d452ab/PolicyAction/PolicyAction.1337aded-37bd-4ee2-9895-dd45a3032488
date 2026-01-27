@@ -1,0 +1,37 @@
+{
+  "id" : "1337aded-37bd-4ee2-9895-dd45a3032488",
+  "names" : [ {
+    "value" : "Response Transformation",
+    "locale" : "en"
+  } ],
+  "templateKey" : "responseTransformation",
+  "parameters" : [ {
+    "templateKey" : "transformationConditions",
+    "parameters" : [ {
+      "templateKey" : "logicalConnector",
+      "values" : [ "OR" ]
+    }, {
+      "templateKey" : "transformationCondition",
+      "parameters" : [ {
+        "templateKey" : "transformationVariable",
+        "values" : [ "${operationName}" ]
+      }, {
+        "templateKey" : "transformationConditionOperator",
+        "values" : [ "equals" ]
+      }, {
+        "templateKey" : "transformationConditionValue",
+        "values" : [ "/basic/Summation" ]
+      } ]
+    } ]
+  }, {
+    "templateKey" : "responseTransformationConfiguration",
+    "parameters" : [ {
+      "templateKey" : "payloadTransformation",
+      "parameters" : [ {
+        "templateKey" : "payload",
+        "values" : [ "{\r\n    \"data\": {\r\n        \"num1\": \"${response.payload.jsonPath[$.num1]}\",\r\n        \"num2\": \"${response.payload.jsonPath[$.num2]}\",\r\n        \"value\": \"${response.payload.jsonPath[$.value]}\"\r\n    }\r\n}" ]
+      } ]
+    } ]
+  } ],
+  "active" : false
+}
