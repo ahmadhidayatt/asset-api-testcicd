@@ -56,13 +56,6 @@ pipeline {
 
     stage('Git Commit & Push') {
       steps {
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'github-creds',
-            usernameVariable: 'GIT_USER',
-            passwordVariable: 'GIT_PASS'
-          )
-        ]) {
           powershell '''
             $ErrorActionPreference = "Stop"
 
@@ -84,7 +77,7 @@ pipeline {
 
             exit 0
           '''
-        }
+        
       }
     }
   }
