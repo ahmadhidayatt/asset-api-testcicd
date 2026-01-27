@@ -30,11 +30,9 @@ pipeline {
           env.GIT_USER_EMAIL = props['git_user_email']?.trim()
 
           env.COMMON_LIB_LOCATION = "${env.WORKSPACE}\\bin"
-          env.API_DIR             = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
 
           echo "API_PROJECT=${env.API_PROJECT}"
           echo "APIGATEWAY_URL=${env.APIGATEWAY_URL}"
-          echo "API_DIR=${env.API_DIR}"
         }
       }
     }
@@ -58,63 +56,38 @@ pipeline {
 
     stage('Git Commit & Push') {
       steps {
-        powershell '''
-          git config user.name  "$env:GIT_USER_NAME"
-          git config user.email "$env:GIT_USER_EMAIL"
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'github-creds',
+            usernameVariable: 'GIT_USER',
+            passwordVariable: 'GIT_PASS'
+          )
+        ]) {
+          powershell '''
+            $ErrorActionPreference = "Stop"
 
-          git checkout main
-          git pull origin main
+            git config user.name  "$env:GIT_USER_NAME"
+            git config user.email "$env:GIT_USER_EMAIL"
 
-          git status
-          git add -A
+            git checkout -B main origin/main
+            git pull origin main
 
-          git commit -m "auto: export API $env:API_PROJECT"
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "No changes to commit"
+            git add -A
+
+            try {
+              git commit -m "auto: export API $env:API_PROJECT"
+            } catch {
+              Write-Host "No changes to commit"
+            }
+
+            git push https://comp.ahmadhidayat@gmail.com:Sparatiz322013!!!@github.com/ahmadhidayatt/asset-api-testcicd.git main
+
             exit 0
-          }
-
-          stage('Git Commit & Push') {
-  steps {
-    withCredentials([
-      usernamePassword(
-        credentialsId: 'github-creds',
-        usernameVariable: 'GIT_USER',
-        passwordVariable: 'GIT_PASS'
-      )
-    ]) {
-      powershell '''
-        $ErrorActionPreference = "Stop"
-
-        git config user.name  "$env:GIT_USER_NAME"
-        git config user.email "$env:GIT_USER_EMAIL"
-
-        git checkout -B main origin/main
-        git pull origin main
-
-        git add -A
-
-        try {
-          git commit -m "auto: export API $env:API_PROJECT"
-        } catch {
-          Write-Host "No changes to commit"
+          '''
         }
-
-        # 🔥 AUTH NON-INTERACTIVE
-        git push https://comp.ahmadhidayat@gmail.com:Sparatiz322013!!!@github.com/ahmadhidayatt/asset-api-testcicd.git main
-
-        exit 0
-      '''
-    }
-  }
-}
-
-          exit 0
-        '''
       }
     }
-
-  }   // ✅ stages CLOSE DI SINI
+  }
 
   post {
     success {
@@ -124,5 +97,4 @@ pipeline {
       echo "EXPORT PIPELINE FAILED ❌"
     }
   }
-
-}   // ✅ pipeline CLOSE
+}
