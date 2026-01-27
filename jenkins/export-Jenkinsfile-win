@@ -1,1 +1,81 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    timeout(time: 30, unit: 'MINUTES')
+    disableConcurrentBuilds()
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Load Properties') {
+      steps {
+        script {
+          def props = readProperties file: 'jenkins/jenkins.properties'
+
+          env.API_PROJECT    = props.api_project?.trim()
+          env.APIGW_URL      = props.apigateway_url?.trim()
+          env.APIGW_USER     = props.apigateway_username?.trim()
+          env.APIGW_PASS     = props.apigateway_password?.trim()
+          env.GIT_BRANCH     = props.git_branch ?: 'main'
+          env.API_DIR        = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
+          env.BIN_DIR        = "${env.WORKSPACE}\\bin"
+
+          echo "EXPORT API_PROJECT=${env.API_PROJECT}"
+        }
+      }
+    }
+
+    stage('Export API from Gateway') {
+      steps {
+        powershell '''
+          Write-Host "Exporting API: $env:API_PROJECT"
+          Write-Host "Gateway: $env:APIGW_URL"
+
+          . "$env:BIN_DIR\\common.ps1"
+
+          Export-Api `
+            -ApiProject $env:API_PROJECT `
+            -Url $env:APIGW_URL `
+            -Username $env:APIGW_USER `
+            -Password $env:APIGW_PASS
+        '''
+      }
+    }
+
+    stage('Git Commit & Push') {
+      steps {
+        powershell '''
+          git status
+          git add apis/$env:API_PROJECT
+
+          $changes = git status --porcelain
+          if (-not $changes) {
+            Write-Host "No changes to commit"
+            exit 0
+          }
+
+          git commit -m "auto export $env:API_PROJECT [Jenkins]"
+          git push origin $env:GIT_BRANCH
+        '''
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "EXPORT SUCCESS – Git updated"
+    }
+    failure {
+      echo "EXPORT FAILED"
+    }
+  }
+}
 
