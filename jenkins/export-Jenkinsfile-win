@@ -3,13 +3,14 @@ pipeline {
 
   options {
     timestamps()
-    timeout(time: 30, unit: 'MINUTES')
+    timeout(time: 60, unit: 'MINUTES')
     disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '30'))
   }
 
   stages {
 
-    stage('Checkout') {
+    stage('Checkout SCM') {
       steps {
         checkout scm
       }
@@ -20,15 +21,20 @@ pipeline {
         script {
           def props = readProperties file: 'jenkins/jenkins.properties'
 
-          env.API_PROJECT    = props.api_project?.trim()
-          env.APIGW_URL      = props.apigateway_url?.trim()
-          env.APIGW_USER     = props.apigateway_username?.trim()
-          env.APIGW_PASS     = props.apigateway_password?.trim()
-          env.GIT_BRANCH     = props.git_branch ?: 'main'
-          env.API_DIR        = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
-          env.BIN_DIR        = "${env.WORKSPACE}\\bin"
+          env.API_PROJECT         = props['api_project']?.trim()
+          env.APIGATEWAY_URL      = props['apigateway_url']?.trim()
+          env.APIGATEWAY_USERNAME = props['apigateway_username']?.trim()
+          env.APIGATEWAY_PASSWORD = props['apigateway_password']?.trim()
 
-          echo "EXPORT API_PROJECT=${env.API_PROJECT}"
+          env.GIT_USER_NAME  = props['git_user_name']?.trim()
+          env.GIT_USER_EMAIL = props['git_user_email']?.trim()
+
+          env.COMMON_LIB_LOCATION = "${env.WORKSPACE}\\bin"
+          env.API_DIR             = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
+
+          echo "API_PROJECT=${env.API_PROJECT}"
+          echo "APIGATEWAY_URL=${env.APIGATEWAY_URL}"
+          echo "API_DIR=${env.API_DIR}"
         }
       }
     }
@@ -37,15 +43,15 @@ pipeline {
       steps {
         powershell '''
           Write-Host "Exporting API: $env:API_PROJECT"
-          Write-Host "Gateway: $env:APIGW_URL"
+          Write-Host "Gateway: $env:APIGATEWAY_URL"
 
-          . "$env:BIN_DIR\\common.ps1"
+          . "$env:COMMON_LIB_LOCATION\\common.ps1"
 
           Export-Api `
             -ApiProject $env:API_PROJECT `
-            -Url $env:APIGW_URL `
-            -Username $env:APIGW_USER `
-            -Password $env:APIGW_PASS
+            -Url        $env:APIGATEWAY_URL `
+            -Username   $env:APIGATEWAY_USERNAME `
+            -Password   $env:APIGATEWAY_PASSWORD
         '''
       }
     }
@@ -53,29 +59,36 @@ pipeline {
     stage('Git Commit & Push') {
       steps {
         powershell '''
-          git status
-          git add apis/$env:API_PROJECT
+          git config user.name  "$env:GIT_USER_NAME"
+          git config user.email "$env:GIT_USER_EMAIL"
 
-          $changes = git status --porcelain
-          if (-not $changes) {
+          git checkout main
+          git pull origin main
+
+          git status
+          git add -A
+
+          git commit -m "auto: export API $env:API_PROJECT"
+          if ($LASTEXITCODE -ne 0) {
             Write-Host "No changes to commit"
             exit 0
           }
 
-          git commit -m "auto export $env:API_PROJECT [Jenkins]"
-          git push origin $env:GIT_BRANCH
+          git push origin main 2>&1 | Write-Host
+          exit 0
         '''
       }
     }
-  }
+
+  }   // ✅ stages CLOSE DI SINI
 
   post {
     success {
-      echo "EXPORT SUCCESS – Git updated"
+      echo "EXPORT PIPELINE SUCCESS ✅"
     }
     failure {
-      echo "EXPORT FAILED"
+      echo "EXPORT PIPELINE FAILED ❌"
     }
   }
-}
 
+}   // ✅ pipeline CLOSE

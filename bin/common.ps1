@@ -11,6 +11,26 @@ $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ROOT_DIR   = Resolve-Path "$SCRIPT_DIR\.."
 
 ##############################################################################
+# Helper: Build Basic Auth Header
+##############################################################################
+function New-BasicAuthHeader {
+    param (
+        [Parameter(Mandatory)]
+        [string]$Username,
+
+        [Parameter(Mandatory)]
+        [string]$Password
+    )
+
+    $token = [Convert]::ToBase64String(
+        [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
+    )
+
+    return @{
+        Authorization = "Basic $token"
+    }
+}
+##############################################################################
 # Ping API Gateway Server
 ##############################################################################
 function Ping-ApigatewayServer {
@@ -102,17 +122,89 @@ function Import-Api {
     Write-Host "Import API OK: $ApiProject"
 }
 
-##############################################################################
-# Export API
-##############################################################################
-function Export-Api {
+function Resolve-ApiId {
     param (
-        [string]$ApiProject,
+        [string]$ApiName,
         [string]$Url,
         [string]$Username,
         [string]$Password
     )
 
+    if ([string]::IsNullOrWhiteSpace($ApiName)) {
+        throw "ApiName is empty"
+    }
+
+    $BaseUrl = $Url.Trim().TrimEnd('/')
+    $SearchUri = "$BaseUrl/rest/apigateway/search"
+
+    $Headers = New-BasicAuthHeader -Username $Username -Password $Password
+    $Headers["Content-Type"] = "application/json"
+
+    $Payload = @{
+        types     = @("api")
+        condition = "and"
+        scope     = @(
+            @{
+                attributeName = "apiName"
+                keyword       = $ApiName
+            }
+        )
+    } | ConvertTo-Json -Depth 6
+
+    Write-Host "DEBUG Searching API ID for [$ApiName]"
+
+    $Resp = Invoke-RestMethod `
+        -Uri $SearchUri `
+        -Method Post `
+        -Headers $Headers `
+        -Body $Payload
+
+    if (-not $Resp.api -or $Resp.api.Count -eq 0) {
+        throw "API NOT FOUND in Gateway: $ApiName"
+    }
+
+    if ($Resp.api.Count -gt 1) {
+        Write-Warning "Multiple APIs found for name [$ApiName], using first result"
+    }
+
+    $ApiId = $Resp.api[0].id
+    Write-Host "DEBUG Resolved API ID: $ApiId"
+
+    return $ApiId
+}
+
+##############################################################################
+# EXPORT API (MAIN FUNCTION)
+##############################################################################
+function Export-Api {
+    param (
+        [Parameter(Mandatory)]
+        [string]$ApiProject,
+
+        [Parameter(Mandatory)]
+        [string]$Url,
+
+        [Parameter(Mandatory)]
+        [string]$Username,
+
+        [Parameter(Mandatory)]
+        [string]$Password
+    )
+
+    Write-Host "=== EXPORT API START ==="
+    Write-Host "API NAME : $ApiProject"
+    Write-Host "GATEWAY  : $Url"
+
+    $BaseUrl = $Url.Trim().TrimEnd('/')
+
+    # Resolve API ID
+    $ApiId = Resolve-ApiId `
+        -ApiName $ApiProject `
+        -Url $BaseUrl `
+        -Username $Username `
+        -Password $Password
+
+    # Prepare paths
     $ApiDir  = Join-Path $ROOT_DIR "apis\$ApiProject"
     $ZipFile = Join-Path $ROOT_DIR "$ApiProject.zip"
 
@@ -121,36 +213,36 @@ function Export-Api {
     }
     New-Item -ItemType Directory -Path $ApiDir | Out-Null
 
-    $Auth = [Convert]::ToBase64String(
-        [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
-    )
+    $Headers = New-BasicAuthHeader -Username $Username -Password $Password
+    $Headers["Accept"] = "application/octet-stream"
 
-    $BaseUrl = $Url.Trim().TrimEnd('/')
-
-    # EXPORT ALL ASSETS
+    # EXPORT FULL API (safe defaults)
     $RequestUri = "$BaseUrl/rest/apigateway/archive" +
-                  "?apis=$ApiProject" +
+                  "?apis=$ApiId" +
                   "&include-registered-applications=true" +
                   "&include-users=true" +
                   "&include-groups=true"
 
-    Write-Host "DEBUG Export URI: $RequestUri"
+    Write-Host "DEBUG Export URI:"
+    Write-Host $RequestUri
 
     Invoke-WebRequest `
         -Uri ([System.Uri]$RequestUri) `
         -Method Get `
-        -Headers @{
-            Authorization = "Basic $Auth"
-            Accept        = "application/octet-stream"
-        } `
+        -Headers $Headers `
         -OutFile $ZipFile
+
+    if (!(Test-Path $ZipFile)) {
+        throw "Export failed: ZIP not created"
+    }
 
     Expand-Archive -Path $ZipFile -DestinationPath $ApiDir -Force
     Remove-Item $ZipFile -Force
 
     Write-Host "EXPORT API OK: $ApiProject"
+    Write-Host "Output dir: $ApiDir"
+    Write-Host "=== EXPORT API END ==="
 }
-
 ##############################################################################
 # Import Configurations
 ##############################################################################
