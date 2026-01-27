@@ -21,10 +21,10 @@ pipeline {
         script {
           def props = readProperties file: 'jenkins/jenkins.properties'
 
-          env.API_PROJECT         = props['api_project'] ?: ''
-          env.APIGATEWAY_URL      = props['apigateway_url'] ?: ''
-          env.APIGATEWAY_USERNAME = props['apigateway_username'] ?: ''
-          env.APIGATEWAY_PASSWORD = props['apigateway_password'] ?: ''
+          env.API_PROJECT         = props['api_project']?.trim()
+          env.APIGATEWAY_URL      = props['apigateway_url']?.trim()
+          env.APIGATEWAY_USERNAME = props['apigateway_username']?.trim()
+          env.APIGATEWAY_PASSWORD = props['apigateway_password']?.trim()
           env.COMMON_LIB_LOCATION = "${env.WORKSPACE}\\bin"
           env.API_DIR             = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
 
