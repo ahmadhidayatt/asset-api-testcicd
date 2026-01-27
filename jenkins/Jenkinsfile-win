@@ -20,7 +20,7 @@ pipeline {
       steps {
         script {
           def props = readProperties file: 'jenkins/jenkins.properties'
-
+       
           env.API_PROJECT         = props['api_project']?.trim()
           env.APIGATEWAY_URL      = props['apigateway_url']?.trim()
           env.APIGATEWAY_USERNAME = props['apigateway_username']?.trim()
@@ -39,7 +39,9 @@ pipeline {
         powershell '''
           Write-Host "API_DIR=$env:API_DIR"
           Get-ChildItem $env:API_DIR
-
+          Write-Host "DEBUG APIGATEWAY_URL raw: [$env:APIGATEWAY_URL]"
+          $url = [string]$env:APIGATEWAY_URL
+          Write-Host "DEBUG casted URL: [$url]"
           Write-Host "COMMON_LIB_LOCATION=$env:COMMON_LIB_LOCATION"
           Get-ChildItem $env:COMMON_LIB_LOCATION
 
