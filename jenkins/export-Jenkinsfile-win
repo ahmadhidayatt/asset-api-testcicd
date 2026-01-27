@@ -73,7 +73,8 @@ pipeline {
               Write-Host "No changes to commit"
             }
 
-            git push https://ahmadhidayatt:Sparatiz322013!!!@github.com/ahmadhidayatt/asset-api-testcicd.git main
+            git remote set-url origin git@github.com:ahmadhidayatt/asset-api-testcicd.git
+            git push origin main
 
             exit 0
           '''
