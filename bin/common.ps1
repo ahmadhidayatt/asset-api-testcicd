@@ -107,49 +107,48 @@ function Import-Api {
 ##############################################################################
 function Export-Api {
     param (
-        [Parameter(Mandatory)]
         [string]$ApiProject,
-
-        [Parameter(Mandatory)]
-        [Alias('GatewayUrl')]
         [string]$Url,
-
-        [Parameter(Mandatory)]
         [string]$Username,
-
-        [Parameter(Mandatory)]
         [string]$Password
     )
 
     $ApiDir  = Join-Path $ROOT_DIR "apis\$ApiProject"
     $ZipFile = Join-Path $ROOT_DIR "$ApiProject.zip"
 
-    if (!(Test-Path $ApiDir)) {
-        throw "API directory not found: $ApiDir"
+    if (Test-Path $ApiDir) {
+        Remove-Item $ApiDir -Recurse -Force
     }
+    New-Item -ItemType Directory -Path $ApiDir | Out-Null
 
     $Auth = [Convert]::ToBase64String(
         [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
     )
 
-    $BaseUrl    = $Url.Trim().TrimEnd('/')
-    $RequestUri = "$BaseUrl/rest/apigateway/archive"
+    $BaseUrl = $Url.Trim().TrimEnd('/')
+
+    # EXPORT ALL ASSETS
+    $RequestUri = "$BaseUrl/rest/apigateway/archive" +
+                  "?apis=$ApiProject" +
+                  "&include-registered-applications=true" +
+                  "&include-users=true" +
+                  "&include-groups=true"
+
+    Write-Host "DEBUG Export URI: $RequestUri"
 
     Invoke-WebRequest `
         -Uri ([System.Uri]$RequestUri) `
-        -Method Post `
+        -Method Get `
         -Headers @{
-            Authorization            = "Basic $Auth"
-            "x-HTTP-Method-Override" = "GET"
+            Authorization = "Basic $Auth"
+            Accept        = "application/octet-stream"
         } `
-        -ContentType "application/json" `
-        -InFile "$ApiDir\export_payload.json" `
         -OutFile $ZipFile
 
     Expand-Archive -Path $ZipFile -DestinationPath $ApiDir -Force
     Remove-Item $ZipFile -Force
 
-    Write-Host "Export API OK: $ApiProject"
+    Write-Host "EXPORT API OK: $ApiProject"
 }
 
 ##############################################################################
