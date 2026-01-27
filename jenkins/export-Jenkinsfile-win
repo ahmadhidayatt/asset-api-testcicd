@@ -75,6 +75,7 @@ pipeline {
           }
 
           git push origin main
+          exit 0
         '''
       }
     }
