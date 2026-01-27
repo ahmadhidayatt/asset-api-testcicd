@@ -1,0 +1,455 @@
+##############################################################################
+## common_mac.lib - CI/CD ready (bash/zsh)
+##
+## Export (recommended):
+##   GET /rest/apigateway/archive?apis=<apiId>&include-applications=true&include-users=true&include-groups=false
+##
+## Optional env flags:
+##   APIGW_INSECURE=true                       -> curl -k
+##   EXPORT_ZIP_ONLY=true                      -> export only zip (no unzip, no filtering)
+##   EXPORT_ZIP_PATH=/path/OnlineTransfer.zip  -> output zip path
+##   EXPORT_INCLUDE_APPLICATIONS=true|false
+##   EXPORT_INCLUDE_USERS=true|false
+##   EXPORT_INCLUDE_GROUPS=true|false
+##   EXPORT_INCLUDE_TRUSTSTORES=true|false
+##   EXPORT_KEEP_DIRS="API,Application,User,Strategy"   -> keep only these folders after unzip
+##
+## Import:
+##   IMPORT_ZIP_PATH=/path/OnlineTransfer.zip  -> import from zip artifact
+##############################################################################
+
+# Detect lib path (bash & zsh)
+__lib_file=""
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+  __lib_file="${BASH_SOURCE[0]}"
+else
+  __lib_file="${(%):-%x}"
+fi
+
+BIN_DIR="$(cd "$(dirname "$__lib_file")" && pwd)"
+ROOT_DIR="$(cd "$BIN_DIR/.." && pwd)"
+
+_curl_common_args() {
+  local args=(-sS)
+  if [ "${APIGW_INSECURE:-false}" = "true" ]; then
+    args+=(-k)
+  fi
+  echo "${args[@]}"
+}
+
+# --- Resolve API ID by apiName (no regex), exact-match preferred ---
+resolve_api_id_by_name() {
+  local api_name="$1"
+  local url="$2"
+  local username="$3"
+  local password="$4"
+
+  local payload
+  payload=$(cat <<EOF
+{"types":["api"],"condition":"and","scope":[{"attributeName":"apiName","keyword":"${api_name}"}]}
+EOF
+)
+
+  local resp
+  resp="$(curl $(_curl_common_args) -u "${username}:${password}" \
+    -H "Content-Type: application/json" \
+    -d "$payload" \
+    "${url}/rest/apigateway/search")"
+
+  if command -v python3 >/dev/null 2>&1; then
+    python3 -c '
+import sys, json
+api_name = sys.argv[1]
+d = json.load(sys.stdin)
+items = d.get("api", []) or []
+
+exact = [x for x in items if x.get("apiName") == api_name]
+if exact:
+    print(exact[0].get("id",""))
+    raise SystemExit(0)
+
+if len(items) == 1:
+    print(items[0].get("id",""))
+    raise SystemExit(0)
+
+if len(items) == 0:
+    print("")
+    raise SystemExit(0)
+
+# ambiguous
+cands=[]
+for x in items:
+    cands.append(
+        str(x.get("apiName")) +
+        " (v=" + str(x.get("apiVersion")) +
+        ", id=" + str(x.get("id")) + ")"
+    )
+sys.stderr.write("API name not unique / not exact match. Kandidat:\\n- " + "\\n- ".join(cands) + "\\n")
+print("")
+' "$api_name" <<<"$resp"
+    return 0
+  fi
+
+  echo "$resp" | sed -n 's/.*"id":"\([^"]*\)".*/\1/p' | head -n 1
+}
+
+# --- helper: normalize "true/false" env ---
+_is_true() {
+  [ "${1:-false}" = "true" ] || [ "${1:-false}" = "TRUE" ] || [ "${1:-false}" = "1" ]
+}
+
+# --- helper: post-unzip keep only selected folders ---
+_filter_export_dirs() {
+  local api_dir="$1"
+
+  # default: keep nothing special (no filtering)
+  if [ -z "${EXPORT_KEEP_DIRS:-}" ]; then
+    return 0
+  fi
+
+  # turn "API,Application,User" -> array
+  local keep_csv="${EXPORT_KEEP_DIRS}"
+  local keep_list=()
+  local IFS=','
+
+  for x in $keep_csv; do
+    # trim spaces
+    x="$(echo "$x" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+    [ -n "$x" ] && keep_list+=("$x")
+  done
+
+  if [ ${#keep_list[@]} -eq 0 ]; then
+    return 0
+  fi
+
+  # move kept dirs to temp, wipe, restore
+  local tmp_dir
+  tmp_dir="$(mktemp -d 2>/dev/null || mktemp -d -t apigw_export)"
+
+  for k in "${keep_list[@]}"; do
+    if [ -e "$api_dir/$k" ]; then
+      mv "$api_dir/$k" "$tmp_dir/" 2>/dev/null || true
+    fi
+  done
+
+  rm -rf "$api_dir"
+  mkdir -p "$api_dir"
+
+  for k in "${keep_list[@]}"; do
+    if [ -e "$tmp_dir/$k" ]; then
+      mv "$tmp_dir/$k" "$api_dir/" 2>/dev/null || true
+    fi
+  done
+
+  rm -rf "$tmp_dir" || true
+}
+
+# -------------------------
+# IMPORT API
+# -------------------------
+import_api() {
+  local api_project="$1"
+  local url="$2"
+  local username="$3"
+  local password="$4"
+
+  local API_DIR="$ROOT_DIR/apis/$api_project"
+  local ZIP_FILE="${IMPORT_ZIP_PATH:-$ROOT_DIR/${api_project}.zip}"
+  local RESP_FILE="$ROOT_DIR/import_response_${api_project}.txt"
+
+  if [ -z "${IMPORT_ZIP_PATH:-}" ]; then
+    if [ ! -d "$API_DIR" ]; then
+      echo "Import failed: flat folder not found: $API_DIR"
+      return 1
+    fi
+    # zsh-safe (no ./*)
+    ( cd "$API_DIR" && zip -qr "$ZIP_FILE" . )
+  else
+    if [ ! -f "$ZIP_FILE" ]; then
+      echo "Import failed: zip not found: $ZIP_FILE"
+      return 1
+    fi
+  fi
+
+  local http_code
+  http_code="$(curl $(_curl_common_args) \
+    -u "${username}:${password}" \
+    -H "Content-Type:application/zip" \
+    -H "Accept:application/json" \
+    --data-binary @"$ZIP_FILE" \
+    -o "$RESP_FILE" \
+    -w "%{http_code}" \
+    "${url}/rest/apigateway/archive?overwrite=*" || true)"
+
+  if [ "$http_code" != "200" ] && [ "$http_code" != "201" ]; then
+    echo "Import failed: HTTP=$http_code"
+    echo "Response:"
+    cat "$RESP_FILE" 2>/dev/null || true
+    echo ""
+    return 1
+  fi
+
+  echo "Import OK: $api_project (HTTP=$http_code)"
+
+  if [ -z "${IMPORT_ZIP_PATH:-}" ]; then
+    rm -f "$ZIP_FILE" || true
+  fi
+}
+
+# -------------------------
+# EXPORT API (GET query params, stable)
+# -------------------------
+export_api() {
+  local api_project="$1"
+  local url="$2"
+  local username="$3"
+  local password="$4"
+
+  local API_DIR="$ROOT_DIR/apis/$api_project"
+  mkdir -p "$API_DIR"
+
+  local ZIP_FILE="${EXPORT_ZIP_PATH:-$ROOT_DIR/${api_project}.zip}"
+
+  local api_id
+  api_id="$(resolve_api_id_by_name "$api_project" "$url" "$username" "$password")"
+  if [ -z "$api_id" ]; then
+    echo "Export failed: API id not found / ambiguous for apiName='$api_project'"
+    return 1
+  fi
+
+  local inc_reg_apps="${EXPORT_INCLUDE_REGISTERED_APPLICATIONS:-true}"
+  local inc_docs="${EXPORT_INCLUDE_DOCUMENTS:-true}"
+
+  local http_code
+  http_code="$(curl $(_curl_common_args) -G \
+    -u "${username}:${password}" \
+    -H "Accept: application/octet-stream" \
+    --data-urlencode "apis=${api_id}" \
+    --data-urlencode "include-registered-applications=${inc_reg_apps}" \
+    --data-urlencode "include-documents=${inc_docs}" \
+    -o "$ZIP_FILE" \
+    -w "%{http_code}" \
+    "${url}/rest/apigateway/archive" || true)"
+
+  if [ "$http_code" != "200" ]; then
+    echo "Export failed: HTTP=$http_code"
+    echo "Response (first 1200 bytes):"
+    head -c 1200 "$ZIP_FILE" 2>/dev/null || true
+    echo ""
+    rm -f "$ZIP_FILE" || true
+    return 1
+  fi
+
+  if [ "${EXPORT_ZIP_ONLY:-false}" = "true" ]; then
+    echo "Export OK (zip only): $ZIP_FILE (id=$api_id)"
+    return 0
+  fi
+
+  # Clean & unzip (zsh-safe)
+  rm -rf "$API_DIR"
+  mkdir -p "$API_DIR"
+  unzip -oq "$ZIP_FILE" -d "$API_DIR/"
+  rm -f "$ZIP_FILE"
+
+  _filter_export_dirs "$API_DIR"
+
+  echo "Export OK: extracted to $API_DIR (id=$api_id)"
+}
+
+
+
+##############################################################################
+# EXTRA FUNCTIONS (ported from common.lib) - zsh-safe
+##############################################################################
+
+ping_apigateway_server() {
+  local SERVER="$1"
+  local PAUSE="$2"
+  local ITERATIONS="$3"
+  local HEALTH_URL="rest/apigateway/health"
+
+  while true; do
+    if [ "$ITERATIONS" -eq 0 ]; then
+      return 0
+    fi
+
+    curl $(_curl_common_args) -f "${SERVER}/${HEALTH_URL}" >/dev/null 2>&1
+    local CS=$?
+
+    if [ $CS -ne 0 ]; then
+      echo "${SERVER} is down"
+      ITERATIONS=$((ITERATIONS-1))
+    else
+      return 1
+    fi
+
+    sleep "$PAUSE"
+  done
+}
+
+import_configurations() {
+  local configuration_name="$1"
+  local url="$2"
+  local username="$3"
+  local password="$4"
+  local stage="${5:-}"
+
+  local BIN_DIR="$PWD"
+  local CONF_DIR="$configuration_name"
+  local ZIP_FILE="config.zip"
+
+  if [ -d "$CONF_DIR" ]; then
+    (
+      cd "$CONF_DIR" && zip -qr "$ZIP_FILE" .
+    )
+    curl $(_curl_common_args) -i -X POST \
+      "${url}/rest/apigateway/archive?overwrite=*" \
+      -H "Content-Type:application/zip" \
+      -H "Accept:application/json" \
+      --data-binary @"${CONF_DIR}/${ZIP_FILE}" \
+      -u "${username}:${password}" >/dev/null
+    rm -f "${CONF_DIR}/${ZIP_FILE}"
+  else
+    echo "The Configuration with name ${configuration_name} does not exist as a flat file."
+    cd "$BIN_DIR"
+    return 1
+  fi
+
+  cd "$BIN_DIR"
+}
+
+export_configurations() {
+  local configuration_name="$1"
+  local url="$2"
+  local username="$3"
+  local password="$4"
+
+  local CONF_DIR="$configuration_name"
+  local ZIP_FILE="config.zip"
+
+  if [ ! -d "$CONF_DIR" ]; then
+    echo "The Configuration with name ${configuration_name} does not exist in the flat file."
+    return 1
+  fi
+
+  if [ ! -f "${CONF_DIR}/export_payload.json" ]; then
+    echo "Export configurations failed: missing ${CONF_DIR}/export_payload.json"
+    return 1
+  fi
+
+  local inc_reg_apps="${EXPORT_INCLUDE_REGISTERED_APPLICATIONS:-true}"
+  local inc_docs="${EXPORT_INCLUDE_DOCUMENTS:-true}"
+
+  curl $(_curl_common_args) \
+    "${url}/rest/apigateway/archive?include-registered-applications=${inc_reg_apps}&include-documents=${inc_docs}" \
+    -d @"${CONF_DIR}/export_payload.json" \
+    --output "$ZIP_FILE" \
+    -u "${username}:${password}" \
+    -H "x-HTTP-Method-Override: GET" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/octet-stream"
+
+  unzip -oq "$ZIP_FILE" -d "$CONF_DIR/"
+  rm -f "$ZIP_FILE"
+}
+
+
+split() {
+  local input="$1"
+  local delimiter="$2"
+  local string="${input}${delimiter}"
+
+  env_vars_array=()
+  while [[ -n "$string" ]]; do
+    env_vars_array+=( "${string%%"$delimiter"*}" )
+    string="${string#*"$delimiter"}"
+  done
+}
+
+run_test() {
+  local test_collection="$1"
+  local environment_file="$2"
+  local env_vars="$3"
+  local result_folder="$4"
+
+  local newman_environment=""
+
+  if [ -n "${env_vars:-}" ]; then
+    split "$env_vars" ";"
+    for i in "${env_vars_array[@]}"; do
+      newman_environment="${newman_environment} --env-var ${i} "
+    done
+  fi
+
+  echo "Running postman tests"
+  echo "Environment: ${environment_file}"
+
+  if [ -z "$newman_environment" ]; then
+    newman run "$test_collection" \
+      --reporters cli,junit,html \
+      --reporter-junit-export "${result_folder}/${RANDOM}.xml" \
+      -e "$environment_file" \
+      --reporter-html-export "${result_folder}/index.html"
+  else
+    # shellcheck disable=SC2086
+    newman run "$test_collection" \
+      --reporters cli,junit,html \
+      --reporter-junit-export "${result_folder}/${RANDOM}.xml" \
+      -e "$environment_file" \
+      $newman_environment \
+      --reporter-html-export "${result_folder}/index.html"
+  fi
+}
+
+run_test_suite() {
+  local test_suite="$1"
+  local environment_file_location="$2"
+  local apigateway_server_url="$3"
+  local result_folder="$4"
+
+  [ -d "$result_folder" ] && rm -rf "$result_folder"
+  mkdir -p "$result_folder"
+
+  local CURR_DIR="../"
+  local API_DIR="${CURR_DIR}/tests/test-suites/"
+
+  echo "Running tests for API gateway"
+
+  if [ "$test_suite" = "all" ]; then
+    # zsh-safe: avoid failing on empty glob
+    if [ -n "${ZSH_VERSION:-}" ]; then
+      setopt local_options null_glob
+    fi
+
+    for file in "${API_DIR}"*; do
+      [ -f "$file" ] || continue
+      run_test "$file" "$environment_file_location" "httpInvokeUrl=${apigateway_server_url}" "$result_folder"
+    done
+    return 0
+  fi
+
+  run_test "$test_suite" "$environment_file_location" "httpInvokeUrl=${apigateway_server_url}" "$result_folder"
+}
+
+promote_api() {
+  local api_project="$1"
+  local environment_file_location="$2"
+  local env_vars="$3"
+
+  local CURR_DIR="../"
+  local PROMOTION_MANAGEMENT="${CURR_DIR}/utilities/promotion/PromotionManagement.json"
+  local PROMOTION_MANAGEMENT_PAYLOAD="${CURR_DIR}/apis/${api_project}/promotion_payload.json"
+
+  local newman_environment=""
+
+  if [ -n "${env_vars:-}" ]; then
+    split "$env_vars" ";"
+    for i in "${env_vars_array[@]}"; do
+      newman_environment="${newman_environment} --env-var ${i} "
+    done
+  fi
+
+  # shellcheck disable=SC2086
+  newman run "$PROMOTION_MANAGEMENT" -g "$environment_file_location" -e "$PROMOTION_MANAGEMENT_PAYLOAD" $newman_environment
+}
+

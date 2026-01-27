@@ -1,0 +1,17 @@
+{
+  "id" : "a8c54f9b-142b-4660-a6fa-cbb33603330f",
+  "names" : [ {
+    "value" : "Straight Through Routing",
+    "locale" : "en"
+  } ],
+  "templateKey" : "straightThroughRouting",
+  "parameters" : [ {
+    "templateKey" : "endpointUri",
+    "values" : [ "https://fakestoreapi.com/products" ]
+  }, {
+    "templateKey" : "method",
+    "values" : [ "GET" ]
+  } ],
+  "active" : false,
+  "_docType" : "policyactions"
+}

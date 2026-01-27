@@ -1,0 +1,11 @@
+{
+  "applicationId" : "1f21ac2c-4dda-435d-b353-267d9ac55412",
+  "apiIds" : [ "49a522df-7241-46c6-a83c-10356566eb90" ],
+  "lastUpdated" : 1766419013298,
+  "primaryNode" : {
+    "hostId" : "b10d5893-4a17-4e9d-a225-5b77616016e1",
+    "replica" : 0
+  },
+  "registeredApplicationId" : "registeredapplications_1f21ac2c-4dda-435d-b353-267d9ac55412",
+  "_docType" : "registeredapplications"
+}

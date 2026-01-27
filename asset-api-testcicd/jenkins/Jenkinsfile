@@ -1,0 +1,54 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    timeout(time: 60, unit: 'MINUTES')
+    disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '30'))
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Load Properties') {
+      steps {
+        script {
+          def props = readProperties file: 'jenkins/jenkins.properties'
+          env.API_PROJECT          = props['api_project'] ?: ''
+          env.APIGATEWAY_URL       = props['apigateway_url'] ?: ''
+          env.APIGATEWAY_USERNAME  = props['apigateway_username'] ?: ''
+          env.APIGATEWAY_PASSWORD  = props['apigateway_password'] ?: (props['apigateway_password'] ?: '')
+          env.COMMON_LIB_LOCATION  = "${env.WORKSPACE}/bin"
+          env.API_DIR              = "${env.WORKSPACE}/apis/${env.API_PROJECT}"
+
+          echo "Loaded props: API_PROJECT=${env.API_PROJECT}, APIGATEWAY_URL=${env.APIGATEWAY_URL}"
+          echo "API_DIR=${env.API_DIR}"
+        }
+      }
+    }
+
+    stage('BuildAndDeploy') {
+      steps {
+        sh '''
+          set -e
+
+          echo "API_DIR=$API_DIR"
+          ls -la "$API_DIR"
+
+          echo "COMMON_LIB_LOCATION=$COMMON_LIB_LOCATION"
+          ls -la "$COMMON_LIB_LOCATION"
+
+          source "$COMMON_LIB_LOCATION/common.lib"
+          import_api "$API_PROJECT" "$APIGATEWAY_URL" "$APIGATEWAY_USERNAME" "$APIGATEWAY_PASSWORD"
+        '''
+      }
+    }
+
+  }
+}

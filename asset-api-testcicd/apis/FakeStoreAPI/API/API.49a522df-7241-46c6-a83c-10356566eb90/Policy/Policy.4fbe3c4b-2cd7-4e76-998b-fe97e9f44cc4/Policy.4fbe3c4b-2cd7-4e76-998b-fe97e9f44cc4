@@ -1,0 +1,89 @@
+{
+  "id" : "4fbe3c4b-2cd7-4e76-998b-fe97e9f44cc4",
+  "names" : [ {
+    "value" : "Default Policy for API FakeStoreAPI",
+    "locale" : "English"
+  } ],
+  "descriptions" : [ {
+    "value" : "",
+    "locale" : "English"
+  } ],
+  "scope" : {
+    "scopeConditions" : [ ]
+  },
+  "policyEnforcements" : [ {
+    "enforcements" : [ {
+      "enforcementObjectId" : "7c50abe1-bdb3-42b5-b78d-3d280ca71589",
+      "order" : "0"
+    }, {
+      "enforcementObjectId" : "26a616e3-9778-4c00-b5fc-632c02f7a83e",
+      "order" : "1"
+    }, {
+      "enforcementObjectId" : "a6faf487-2522-4015-a786-b33a8b5718bd",
+      "order" : "2"
+    }, {
+      "enforcementObjectId" : "0ba7e4d8-f298-4ee3-906c-8484c37020ef",
+      "order" : "3"
+    }, {
+      "enforcementObjectId" : "249b8232-712c-48a5-b6db-b4c457aa11c4",
+      "order" : "4"
+    }, {
+      "enforcementObjectId" : "e0b98d07-814c-4360-aa8b-60fe4961b396",
+      "order" : "5"
+    }, {
+      "enforcementObjectId" : "288adebd-fbda-4db8-b4e1-9e3277a92b59",
+      "order" : "6"
+    }, {
+      "enforcementObjectId" : "8279d088-7270-410a-83fd-1861fdc1c5fe",
+      "order" : "7"
+    } ],
+    "stageKey" : "requestPayloadProcessing"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "a8c54f9b-142b-4660-a6fa-cbb33603330f",
+      "order" : "0"
+    } ],
+    "stageKey" : "routing"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "517af845-5d5f-4b53-a538-3095576e9549",
+      "order" : "0"
+    } ],
+    "stageKey" : "IAM"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "fbe98a71-3dec-439d-9ce7-e0a17e2a6de2",
+      "order" : "0"
+    }, {
+      "enforcementObjectId" : "a8066ef2-920c-41e1-995f-e0e4428954bb",
+      "order" : "1"
+    }, {
+      "enforcementObjectId" : "696f0123-a0f3-4187-8419-8f89783abd30",
+      "order" : "2"
+    } ],
+    "stageKey" : "responseFaultProcessing"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "c8719be3-6c38-4d1b-aee8-af55c4a05a87",
+      "order" : "0"
+    } ],
+    "stageKey" : "transport"
+  }, {
+    "enforcements" : [ {
+      "enforcementObjectId" : "e0705e19-f310-4022-bb58-7be93afacdfe",
+      "order" : "0"
+    }, {
+      "enforcementObjectId" : "3a441845-eaa4-4386-817c-ad2faf1f06c7",
+      "order" : "1"
+    }, {
+      "enforcementObjectId" : "c60faa70-14f2-4366-b6a3-ca6fe54644b7",
+      "order" : "2"
+    } ],
+    "stageKey" : "responseProcessing"
+  } ],
+  "policyScope" : "SERVICE",
+  "systemPolicy" : false,
+  "global" : false,
+  "active" : false,
+  "_docType" : "policy"
+}

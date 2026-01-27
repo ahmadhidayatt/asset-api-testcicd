@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<asset_composite name="APIGatewayAssets" displayName="Assets for API Gateway" runtimeVersion="11.1" targetNamespace="http://namespaces.softwareag.com/webMethods/APIGateway" xmlns="http://namespaces.softwareag.com/acdl/1.0" xmlns:EDA="http://namespaces.softwareag.com/webMethods/EDA" xmlns:MWS="http://namespaces.softwareag.com/webMethods/MWS" xmlns:IS="http://namespaces.softwareag.com/webMethods/IS" xmlns:APIPORTAL="http://namespaces.softwareag.com/webMethods/APIPORTAL" xmlns:AgileApps="http://namespaces.softwareag.com/webMethods/AgileApps" xmlns:BROKER="http://namespaces.softwareag.com/webMethods/BROKER" xmlns:implDetails="http://namespaces.softwareag.com/acdl/implDetails" xmlns:UniversalMessaging="http://namespaces.softwareag.com/webMethods/UniversalMessaging" xmlns:TN="http://namespaces.softwareag.com/webMethods/TN" xmlns:RULES="http://namespaces.softwareag.com/webMethods/RULES" xmlns:BPM="http://namespaces.softwareag.com/webMethods/BPM" xmlns:Optimize="http://namespaces.softwareag.com/webMethods/Optimize">
+    <buildInfo name="BuildTimestamp" value="2025-12-23T08:52:27"/>
+    <asset name="API.49a522df-7241-46c6-a83c-10356566eb90" displayName="FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="API"/>
+        <dependsOn>APIGateway:AccessControlList.23a9d0e1-1740-4885-b418-d1f85898803f</dependsOn>
+        <dependsOn>APIGateway:Policy.4fbe3c4b-2cd7-4e76-998b-fe97e9f44cc4</dependsOn>
+        <dependsOn>APIGateway:RegisteredApplication.1f21ac2c-4dda-435d-b353-267d9ac55412</dependsOn>
+    </asset>
+    <asset name="Policy.4fbe3c4b-2cd7-4e76-998b-fe97e9f44cc4" displayName="Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="Policy"/>
+        <dependsOn>APIGateway:PolicyAction.0ba7e4d8-f298-4ee3-906c-8484c37020ef</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.249b8232-712c-48a5-b6db-b4c457aa11c4</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.26a616e3-9778-4c00-b5fc-632c02f7a83e</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.288adebd-fbda-4db8-b4e1-9e3277a92b59</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.3a441845-eaa4-4386-817c-ad2faf1f06c7</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.517af845-5d5f-4b53-a538-3095576e9549</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.696f0123-a0f3-4187-8419-8f89783abd30</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.7c50abe1-bdb3-42b5-b78d-3d280ca71589</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.8279d088-7270-410a-83fd-1861fdc1c5fe</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.a6faf487-2522-4015-a786-b33a8b5718bd</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.a8066ef2-920c-41e1-995f-e0e4428954bb</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.a8c54f9b-142b-4660-a6fa-cbb33603330f</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.c60faa70-14f2-4366-b6a3-ca6fe54644b7</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.c8719be3-6c38-4d1b-aee8-af55c4a05a87</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.e0705e19-f310-4022-bb58-7be93afacdfe</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.e0b98d07-814c-4360-aa8b-60fe4961b396</dependsOn>
+        <dependsOn>APIGateway:PolicyAction.fbe98a71-3dec-439d-9ce7-e0a17e2a6de2</dependsOn>
+    </asset>
+    <asset name="PolicyAction.7c50abe1-bdb3-42b5-b78d-3d280ca71589" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.26a616e3-9778-4c00-b5fc-632c02f7a83e" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.a6faf487-2522-4015-a786-b33a8b5718bd" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.0ba7e4d8-f298-4ee3-906c-8484c37020ef" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.249b8232-712c-48a5-b6db-b4c457aa11c4" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.e0b98d07-814c-4360-aa8b-60fe4961b396" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.288adebd-fbda-4db8-b4e1-9e3277a92b59" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.8279d088-7270-410a-83fd-1861fdc1c5fe" displayName="Policy Action [Request Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.a8c54f9b-142b-4660-a6fa-cbb33603330f" displayName="Policy Action [Straight Through Routing] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.517af845-5d5f-4b53-a538-3095576e9549" displayName="Policy Action [Identify &amp; Authorize] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.fbe98a71-3dec-439d-9ce7-e0a17e2a6de2" displayName="Policy Action [Conditional Error Processing] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.a8066ef2-920c-41e1-995f-e0e4428954bb" displayName="Policy Action [Conditional Error Processing] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.696f0123-a0f3-4187-8419-8f89783abd30" displayName="Policy Action [Conditional Error Processing] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.c8719be3-6c38-4d1b-aee8-af55c4a05a87" displayName="Policy Action [Enable HTTP / HTTPS] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.e0705e19-f310-4022-bb58-7be93afacdfe" displayName="Policy Action [Response Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.3a441845-eaa4-4386-817c-ad2faf1f06c7" displayName="Policy Action [Response Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="PolicyAction.c60faa70-14f2-4366-b6a3-ca6fe54644b7" displayName="Policy Action [Response Transformation] -&gt; Policy For API FakeStoreAPI[1.0]" isDeployable="true">
+        <implementation.generic type="PolicyAction"/>
+    </asset>
+    <asset name="RegisteredApplication.1f21ac2c-4dda-435d-b353-267d9ac55412" displayName="RegisteredApplication [ CICD ]" isDeployable="true">
+        <implementation.generic type="RegisteredApplication"/>
+    </asset>
+    <asset name="AccessControlList.23a9d0e1-1740-4885-b418-d1f85898803f" displayName="AccessControlList for asset : FakeStoreAPI" isDeployable="true">
+        <implementation.generic type="AccessControlList"/>
+        <dependsOn>APIGateway:AccessProfile.accessProfiles_Administrators</dependsOn>
+        <dependsOn>APIGateway:AccessProfile.accessProfiles_Default</dependsOn>
+    </asset>
+    <asset name="AccessProfile.accessProfiles_Administrators" displayName="Administrators" isDeployable="true">
+        <implementation.generic type="AccessProfile"/>
+    </asset>
+    <asset name="AccessProfile.accessProfiles_Default" displayName="Default" isDeployable="true">
+        <implementation.generic type="AccessProfile"/>
+    </asset>
+</asset_composite>

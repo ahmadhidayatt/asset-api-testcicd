@@ -1,0 +1,10 @@
+{
+  "id" : "accessProfiles_Default",
+  "name" : "Default",
+  "description" : "All users in APIGateway will be part of this team.",
+  "privilege" : [ ],
+  "groupIds" : [ "Everybody" ],
+  "systemDefined" : true,
+  "includeTeamAdminsAsApprovers" : false,
+  "_docType" : "accessProfiles"
+}
