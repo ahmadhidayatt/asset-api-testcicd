@@ -52,6 +52,7 @@ pipeline {
             -GatewayUrl $env:APIGATEWAY_URL `
             -Username $env:APIGATEWAY_USERNAME `
             -Password $env:APIGATEWAY_PASSWORD
+          $global:LASTEXITCODE = 0
         '''
       }
     }
