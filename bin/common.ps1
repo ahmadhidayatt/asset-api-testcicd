@@ -1,6 +1,6 @@
 ##############################################################################
 # common.ps1
-# PowerShell port of common.lib for Jenkins Windows (FIXED)
+# PowerShell port of common.lib for Jenkins Windows (FINAL)
 ##############################################################################
 
 Set-StrictMode -Version Latest
@@ -15,12 +15,15 @@ $ROOT_DIR   = Resolve-Path "$SCRIPT_DIR\.."
 ##############################################################################
 function Ping-ApigatewayServer {
     param (
+        [Parameter(Mandatory)]
+        [Alias('GatewayUrl')]
         [string]$Server,
+
         [int]$Pause,
         [int]$Iterations
     )
 
-    $BaseUrl   = $Server.TrimEnd('/')
+    $BaseUrl   = $Server.Trim().TrimEnd('/')
     $HealthUri = "$BaseUrl/rest/apigateway/health"
 
     while ($true) {
@@ -42,9 +45,17 @@ function Ping-ApigatewayServer {
 ##############################################################################
 function Import-Api {
     param (
+        [Parameter(Mandatory)]
         [string]$ApiProject,
+
+        [Parameter(Mandatory)]
+        [Alias('GatewayUrl')]
         [string]$Url,
+
+        [Parameter(Mandatory)]
         [string]$Username,
+
+        [Parameter(Mandatory)]
         [string]$Password
     )
 
@@ -70,19 +81,12 @@ function Import-Api {
         [Text.Encoding]::ASCII.GetBytes("$Username`:$Password")
     )
 
-    # ===== BUILD URI SAFELY (THIS FIXES YOUR ERROR) =====
-    $BaseUrl    = $Url.Trim()
-    $BaseUrl    = $BaseUrl.TrimEnd('/')
+    $BaseUrl    = $Url.Trim().TrimEnd('/')
     $RequestUri = "$BaseUrl/rest/apigateway/archive?overwrite=*"
 
     Write-Host "DEBUG RequestUri=[$RequestUri]"
 
-    try {
-        $ParsedUri = [System.Uri]$RequestUri
-    } catch {
-        throw "INVALID URI GENERATED: [$RequestUri]"
-    }
-    # ===================================================
+    $ParsedUri = [System.Uri]$RequestUri
 
     Invoke-RestMethod `
         -Uri $ParsedUri `
@@ -103,9 +107,17 @@ function Import-Api {
 ##############################################################################
 function Export-Api {
     param (
+        [Parameter(Mandatory)]
         [string]$ApiProject,
+
+        [Parameter(Mandatory)]
+        [Alias('GatewayUrl')]
         [string]$Url,
+
+        [Parameter(Mandatory)]
         [string]$Username,
+
+        [Parameter(Mandatory)]
         [string]$Password
     )
 
@@ -127,8 +139,8 @@ function Export-Api {
         -Uri ([System.Uri]$RequestUri) `
         -Method Post `
         -Headers @{
-            Authorization             = "Basic $Auth"
-            "x-HTTP-Method-Override"  = "GET"
+            Authorization            = "Basic $Auth"
+            "x-HTTP-Method-Override" = "GET"
         } `
         -ContentType "application/json" `
         -InFile "$ApiDir\export_payload.json" `
@@ -145,9 +157,17 @@ function Export-Api {
 ##############################################################################
 function Import-Configurations {
     param (
+        [Parameter(Mandatory)]
         [string]$ConfigName,
+
+        [Parameter(Mandatory)]
+        [Alias('GatewayUrl')]
         [string]$Url,
+
+        [Parameter(Mandatory)]
         [string]$Username,
+
+        [Parameter(Mandatory)]
         [string]$Password
     )
 
@@ -189,5 +209,4 @@ function Split-String {
         [string]$Input,
         [string]$Delimiter
     )
-    return $Input -split [Regex]::Escape($Delimiter)
-}
+    return $Input -split
