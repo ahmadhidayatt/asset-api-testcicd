@@ -1,1 +1,141 @@
+pipeline {
+  agent any
+
+  parameters {
+    choice(
+      name: 'DEPLOY_MODE',
+      choices: ['1', '2'],
+      description: '1 = Sequential (Fail Fast), 2 = Partial (Run All)'
+    )
+  }
+
+  options {
+    timestamps()
+    timeout(time: 60, unit: 'MINUTES')
+    disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '30'))
+  }
+
+  environment {
+    COMMON_LIB_LOCATION = "${WORKSPACE}\\bin"
+  }
+
+  stages {
+
+    /* ============================
+       CHECKOUT
+       ============================ */
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    /* ============================
+       LOAD PROPERTIES
+       ============================ */
+    stage('Load Properties') {
+      steps {
+        script {
+          def props = readProperties file: 'jenkins/jenkins.properties'
+
+          env.API_PROJECT         = props['api_project']?.trim()
+          env.APIGATEWAY_USERNAME = props['apigateway_username']?.trim()
+          env.APIGATEWAY_PASSWORD = props['apigateway_password']?.trim()
+          env.API_DIR             = "${env.WORKSPACE}\\apis\\${env.API_PROJECT}"
+
+          // parse gateway URLs
+          env.GATEWAY_URLS_RAW = props['apigateway_urls']?.trim()
+
+          if (!env.GATEWAY_URLS_RAW) {
+            error "apigateway_urls is EMPTY in jenkins.properties"
+          }
+
+          echo "API_PROJECT=${env.API_PROJECT}"
+          echo "API_DIR=${env.API_DIR}"
+          echo "GATEWAYS=${env.GATEWAY_URLS_RAW}"
+        }
+      }
+    }
+
+    /* ============================
+       IMPORT API
+       ============================ */
+    stage('Import API to Gateways') {
+      steps {
+        script {
+
+          // convert CSV -> list
+          def gateways = []
+          env.GATEWAY_URLS_RAW.split(',').eachWithIndex { url, idx ->
+            gateways << [
+              name: "gw-${idx + 1}",
+              url : url.trim()
+            ]
+          }
+
+          def failedGateways = []
+
+          /* ===== MODE 1: SEQUENTIAL ===== */
+          if (params.DEPLOY_MODE == '1') {
+            echo "DEPLOY MODE = SEQUENTIAL (FAIL FAST)"
+
+            for (gw in gateways) {
+              echo ">>> Importing to ${gw.name} (${gw.url})"
+
+              try {
+                powershell """
+                  . "${env.COMMON_LIB_LOCATION}\\common.ps1"
+                  Import-Api `
+                    -ApiProject "${env.API_PROJECT}" `
+                    -Url "${gw.url}" `
+                    -Username "${env.APIGATEWAY_USERNAME}" `
+                    -Password "${env.APIGATEWAY_PASSWORD}"
+                """
+              } catch (err) {
+                error "IMPORT FAILED on ${gw.name} (${gw.url})"
+              }
+            }
+          }
+
+          /* ===== MODE 2: PARTIAL ===== */
+          else {
+            echo "DEPLOY MODE = PARTIAL (RUN ALL)"
+
+            for (gw in gateways) {
+              echo ">>> Importing to ${gw.name} (${gw.url})"
+
+              try {
+                powershell """
+                  . "${env.COMMON_LIB_LOCATION}\\common.ps1"
+                  Import-Api `
+                    -ApiProject "${env.API_PROJECT}" `
+                    -Url "${gw.url}" `
+                    -Username "${env.APIGATEWAY_USERNAME}" `
+                    -Password "${env.APIGATEWAY_PASSWORD}"
+                """
+              } catch (err) {
+                echo "IMPORT FAILED on ${gw.name} (${gw.url})"
+                failedGateways.add("${gw.name}=${gw.url}")
+              }
+            }
+
+            if (failedGateways.size() > 0) {
+              error "IMPORT FAILED on gateways: ${failedGateways.join(', ')}"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "✅ IMPORT SUCCESS: ${env.API_PROJECT}"
+    }
+    failure {
+      echo "❌ IMPORT FAILED: ${env.API_PROJECT}"
+    }
+  }
+}
 
