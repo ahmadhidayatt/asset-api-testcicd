@@ -62,10 +62,8 @@ pipeline {
             git config user.name  "$env:GIT_USER_NAME"
             git config user.email "$env:GIT_USER_EMAIL"
 
-            git checkout -B main origin/main
-            git pull origin main
-
-            git add .
+         
+            git add -A
 
             try {
               git commit -m "auto: export API $env:API_PROJECT"
@@ -74,8 +72,7 @@ pipeline {
             }
 
             
-            git push origin main
-
+            git push origin HEAD:main
             exit 0
           '''
         
