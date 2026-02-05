@@ -102,7 +102,7 @@ function Import-Api {
     )
 
     $BaseUrl    = $Url.Trim().TrimEnd('/')
-    $RequestUri = "$BaseUrl/rest/apigateway/archive?overwrite=*"
+    $RequestUri = "$BaseUrl/rest/apigatewayui/apigateway/archive?overwrite=apis,policies,policyactions&fixingMissingVersions=false"
 
     Write-Host "DEBUG RequestUri=[$RequestUri]"
 
